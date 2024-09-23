@@ -1,0 +1,25 @@
+{
+  "name": "bitarena-sc-listener",
+  "version": "1.0.0",
+  "description": "NodeJS server that listen the bitarena smart contract and do some actions",
+  "main": "index.js",
+  "devDependencies": {
+    "@types/node": "^22.5.5",
+    "typescript": "^5.6.2"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "npx tsc",
+    "start": "npm run build && node dist/index.js",
+    "start:ws": "npm run start -- --app=websocket"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^16.4.5",
+    "viem": "^2.21.12",
+    "winston": "^3.14.2",
+    "zod": "^3.23.8"
+  }
+}
