@@ -1,7 +1,14 @@
-export const factoryAbi = [
+export const factoryAbi = 
+[
   {
     "type": "constructor",
-    "inputs": [],
+    "inputs": [
+      {
+        "name": "_bitarenaGames",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
     "stateMutability": "nonpayable"
   },
   {
@@ -94,13 +101,13 @@ export const factoryAbi = [
           },
           {
             "name": "game",
-            "type": "bytes32",
-            "internalType": "bytes32"
+            "type": "string",
+            "internalType": "string"
           },
           {
             "name": "platform",
-            "type": "bytes32",
-            "internalType": "bytes32"
+            "type": "string",
+            "internalType": "string"
           },
           {
             "name": "nbTeams",
@@ -167,13 +174,13 @@ export const factoryAbi = [
           },
           {
             "name": "game",
-            "type": "bytes32",
-            "internalType": "bytes32"
+            "type": "string",
+            "internalType": "string"
           },
           {
             "name": "platform",
-            "type": "bytes32",
-            "internalType": "bytes32"
+            "type": "string",
+            "internalType": "string"
           },
           {
             "name": "nbTeams",
@@ -272,13 +279,13 @@ export const factoryAbi = [
     "inputs": [
       {
         "name": "_game",
-        "type": "bytes32",
-        "internalType": "bytes32"
+        "type": "string",
+        "internalType": "string"
       },
       {
         "name": "_platform",
-        "type": "bytes32",
-        "internalType": "bytes32"
+        "type": "string",
+        "internalType": "string"
       },
       {
         "name": "_nbTeams",
@@ -616,6 +623,11 @@ export const factoryAbi = [
   },
   {
     "type": "error",
+    "name": "GameDoesNotExistError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "NbPlayersPerTeamsError",
     "inputs": []
   },
@@ -645,6 +657,11 @@ export const factoryAbi = [
         "internalType": "address"
       }
     ]
+  },
+  {
+    "type": "error",
+    "name": "PlatformDoesNotExistError",
+    "inputs": []
   },
   {
     "type": "error",
