@@ -12,14 +12,14 @@ const ALCHEMY_KEY=process.env.ALCHEMY_API_KEY
 
 export const publicClient = createPublicClient({
     chain: sepolia, 
-    transport: http(`https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`)
+    transport: http(`https://eth-sepolia.g.alchemy.com/v2/${ALCHEMY_KEY}`),
   })
 
 
-const adminAccount = privateKeyToAccount(`0x${process.env.ADMIN_FACTORY_PK}` as Address);
+export const adminFactoryAccount = privateKeyToAccount(`0x${process.env.ADMIN_FACTORY_PRIVATE_KEY}` as Address);
 
 export const adminFactoryClient = createWalletClient({
     chain: sepolia,
     transport: http(),
-    account: adminAccount,
+    account: adminFactoryAccount
   });

@@ -669,3 +669,36 @@ export const factoryAbi =
     "inputs": []
   }
 ]
+
+
+export const CREATE_CHALLENGE_ABI = [
+  {
+    "type": "function",
+    "name": "createChallenge",
+    "inputs": [
+      {
+        "name": "_challengeAdmin",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_challengeDisputeAdmin",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_challengeCounter",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract BitarenaChallenge"
+      }
+    ],
+    "stateMutability": "nonpayable"
+  }
+]
