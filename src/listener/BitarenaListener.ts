@@ -97,11 +97,13 @@ export class BitarenaSmartContractsEventListener {
         const cLog = new customLog()
         cLog.logger.info(' > Challenge has been deployed !')
         for (const log of logs) {
-            cLog.logger.info(`---- Factory Address: ${this.factoryAddress}`)
             cLog.logger.info(`---- Tx Hash: ${log.transactionHash}`)
             const challengeCounter = (log as any).args.challengeCounter
             const challengeAddress = (log as any).args.challengeAddress
             cLog.logger.info(`---- challengeCounter: ${challengeCounter}`)
+            const challengeStructCreated = await getChallengeByIndex(challengeCounter)
+            cLog.logger.info(`---- created challenge : `)
+            console.log(challengeStructCreated)
             cLog.logger.info(`---- challengeAddress: ${challengeAddress}`)
         }
     }
