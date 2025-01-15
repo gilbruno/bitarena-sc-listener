@@ -1,22 +1,18 @@
-const { format, createLogger, transports } = require('winston')
-const {timestamp, combine, printf} = format
+import winston from 'winston';
 
-export class Log {
+const logger = winston.createLogger({
+    level: 'info',
+    format: winston.format.combine(
+        winston.format.timestamp(),
+        winston.format.json()
+    ),
+    transports: [
+        new winston.transports.File({ filename: 'error.log', level: 'error' }),
+        new winston.transports.File({ filename: 'combined.log' }),
+        new winston.transports.Console({
+            format: winston.format.simple(),
+        }),
+    ],
+});
 
-    public logger
-
-    constructor() {
-        const logFormat = printf(
-            ({level, message, timestamp}: Record<string, string>) => {
-                return `${timestamp} ${level}: ${message}`
-            }
-        )
-        this.logger = createLogger({
-            format: combine(
-                format.colorize(),
-                timestamp(), 
-                logFormat),
-            transports: [new transports.Console()]
-        })
-    }
-}
+export default logger;

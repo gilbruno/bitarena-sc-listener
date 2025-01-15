@@ -1,0 +1,21 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model EventLog {
+  id              Int      @id @default(autoincrement())
+  contractAddress String
+  eventName       String
+  blockNumber     Int
+  transactionHash String
+  data            Json
+  createdAt       DateTime @default(now())
+
+  @@index([contractAddress, eventName])
+  @@index([blockNumber])
+}

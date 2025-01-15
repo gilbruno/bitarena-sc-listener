@@ -1,4 +1,12 @@
+export interface ContractConfig {
+    address: string;
+    events: string[];
+    abi: any
+}
 
-//export type networkType = Network.BASE_MAINNET | Network.BASE_SEPOLIA | Network.ETH_MAINNET | Network.ETH_SEPOLIA
+export interface BlockchainConfig {
+    wsUrl: string;
+    contracts: ContractConfig[];
+}
 
 
