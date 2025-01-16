@@ -5,18 +5,35 @@ import dotenv from 'dotenv';
 import { ContractConfig } from './type';
 import USDC_SEPOLIA_ABI from './abi/transferEvtAbi.json';
 import { ContractListener } from './listener/ContractListener';
-import { MAINNET_USDC_ADDRESS } from './constants/contractAddresses';
+import { BITARENA_FACTORY_CONTRACT_ADDRESS, MAINNET_USDC_ADDRESS } from './constants/contractAddresses';
+import { BITARENA_FACTORY_ABI } from './abi/FactoryABI';
 
 dotenv.config();
 
 
-//Config to listen USDC on ethereuam mainnet
+//Config to listen USDC on ethereum mainnet
+/*
 const usdcConfig: ContractConfig = {
   address: MAINNET_USDC_ADDRESS,
   abi: USDC_SEPOLIA_ABI as Abi,
   chain: mainnet,
   events: ['Transfer', 'Approval'],
   rpcUrl: process.env.WS_URL_MAINNET || ''
+};
+
+const cListener = new ContractListener(usdcConfig);
+const unwatchFunctions = cListener.watchEvents();
+
+*/
+
+
+//Config to listen Bitarena Factory on ethereum testnet
+const usdcConfig: ContractConfig = {
+  address: BITARENA_FACTORY_CONTRACT_ADDRESS,
+  abi: BITARENA_FACTORY_ABI as Abi,
+  chain: sepolia,
+  events: ['ChallengeDeployed'],
+  rpcUrl: process.env.WS_URL_TESTNET || ''
 };
 
 const cListener = new ContractListener(usdcConfig);

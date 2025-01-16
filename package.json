@@ -12,7 +12,10 @@
     "build": "npx tsc",
     "start": "npm run build && node dist/index.js",
     "startv": "npm run build && node dist/test_viem.js",
-    "start:ws": "npm run start -- --app=websocket"
+    "start:ws": "npm run start -- --app=websocket",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "prisma:studio": "prisma studio --browser none"
   },
   "keywords": [],
   "author": "",

@@ -1,37 +1,13 @@
-import { PrismaClient } from '@prisma/client';
-import logger from '../logger/log';
+import { PrismaClient } from '@prisma/client'
 
-class PrismaManager {
-    private static instance: PrismaClient;
-
-    private constructor() { }
-
-    public static getInstance(): PrismaClient {
-        if (!PrismaManager.instance) {
-            PrismaManager.instance = new PrismaClient({
-                log: [
-                    {
-                        emit: 'event',
-                        level: 'query',
-                    },
-                    {
-                        emit: 'event',
-                        level: 'error',
-                    },
-                ],
-            });
-
-            // Logging des requêtes Prisma
-            PrismaManager.instance.$on('query', (e: { query: string; duration: number }) => {
-                logger.debug('Prisma Query', { query: e.query, duration: e.duration });
-            });
-
-            PrismaManager.instance.$on('error', (e: { message: string }) => {
-                logger.error('Prisma Error', { error: e.message });
-            });
-        }
-        return PrismaManager.instance;
-    }
+declare global {
+  var prisma: PrismaClient | undefined
 }
 
-export const prisma = PrismaManager.getInstance(); 
+const prisma = global.prisma || new PrismaClient()
+
+if (process.env.NODE_ENV !== 'production') {
+  global.prisma = prisma
+}
+
+export default prisma
