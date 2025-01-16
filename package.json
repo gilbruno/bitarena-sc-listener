@@ -11,6 +11,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
     "start": "npm run build && node dist/index.js",
+    "startv": "npm run build && node dist/test_viem.js",
     "start:ws": "npm run start -- --app=websocket"
   },
   "keywords": [],
@@ -22,6 +23,7 @@
     "dotenv": "^16.4.7",
     "mysql2": "^3.12.0",
     "ts-node": "^10.9.2",
+    "viem": "^2.22.8",
     "web3": "^4.16.0",
     "winston": "^3.17.0",
     "ws": "^8.18.0",

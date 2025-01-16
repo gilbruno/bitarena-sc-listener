@@ -1,12 +1,10 @@
+import { Abi, Address, Chain } from "viem";
+
+
 export interface ContractConfig {
-    address: string;
+    address: Address;
+    abi: Abi;
+    chain: Chain
     events: string[];
-    abi: any
-}
-
-export interface BlockchainConfig {
-    wsUrl: string;
-    contracts: ContractConfig[];
-}
-
-
+    rpcUrl: string
+  }
