@@ -37,28 +37,31 @@ export class ContractListener {
         logger.info(`ContractListener initialisé sur la chaîne: ${this.chain.name}`);
     }
   
-    private logEvent(logs: any): void {
-      console.log(logs);
-    }
   
-    public watchEvents(): Map<string, () => void> {
-      const unsubscribeFunctions = new Map<string, () => void>();
-  
-      this.events.forEach(eventName => {
-        logger.info(`Démarrage de la surveillance de l'événement '${eventName}' sur le contrat ${this.contractAddress}`);
+    /*
+        Watch events on the contract
+    */
+    public watchEvents(options: { onLogs: (logs: any) => void }): Map<string, () => void> {
+          const unsubscribeFunctions = new Map<string, () => void>();
+          
+          this.events.forEach(eventName => {
+              logger.info(`Démarrage de la surveillance de l'événement '${eventName}' sur le contrat ${this.contractAddress}`);
+      
+              const unwatch = this.publicClient.watchContractEvent({
+                  address: this.contractAddress,
+                  abi: this.abi,
+                  eventName: eventName,
+                  onLogs: options.onLogs
+              });
+              unsubscribeFunctions.set(eventName, unwatch);
+          });
+      
+          return unsubscribeFunctions;
+      }
 
-        const unwatch = this.publicClient.watchContractEvent({
-          address: this.contractAddress,
-          abi: this.abi,
-          eventName: eventName,
-          onLogs: this.logEvent
-        });
-        unsubscribeFunctions.set(eventName, unwatch);
-      });
-  
-      return unsubscribeFunctions;
-    }
-  
+    /*
+        Stop watching events
+    */
     public stopWatching(unsubscribeFunctions: Map<string, () => void>): void {
       unsubscribeFunctions.forEach((unwatch, eventName) => {
         unwatch();

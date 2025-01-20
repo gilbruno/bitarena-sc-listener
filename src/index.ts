@@ -7,6 +7,8 @@ import USDC_SEPOLIA_ABI from './abi/transferEvtAbi.json';
 import { ContractListener } from './listener/ContractListener';
 import { BITARENA_FACTORY_CONTRACT_ADDRESS, MAINNET_USDC_ADDRESS } from './constants/contractAddresses';
 import { BITARENA_FACTORY_ABI } from './abi/FactoryABI';
+import { ChallengeManager } from './listener/ChallengeManager';
+import { challengeAbi } from './abi/BitarenaChallenge';
 
 dotenv.config();
 
@@ -36,19 +38,37 @@ const usdcConfig: ContractConfig = {
   rpcUrl: process.env.WS_URL_TESTNET || ''
 };
 
-const cListener = new ContractListener(usdcConfig);
-const unwatchFunctions = cListener.watchEvents();
+// Instantiate ChallengeManager
+const challengeManager = new ChallengeManager(
+  challengeAbi as Abi,
+  sepolia,
+  process.env.WS_URL_TESTNET || ''
+);
+
+/*
+  Log event
+*/
+const logEvent = (logs: any): void => {
+  if (logs[0].eventName === 'ChallengeDeployed') {
+      const challengeAddress = logs[0].args.challengeAddress;
+      challengeManager.createListener(challengeAddress);
+  }
+  console.log(logs);
+}
+    
+
+const factoryListener = new ContractListener(usdcConfig);
+const unwatchFunctions = factoryListener.watchEvents({ onLogs: logEvent });
 
 // Handle a clean stop
 process.on('SIGINT', async () => {
-    logger.info('Shutting down...');
-    cListener.stopWatching(unwatchFunctions);
-    process.exit(0);
-  });
-  
-  process.on('SIGTERM', async () => {
-    logger.info('Shutting down...');
-    cListener.stopWatching(unwatchFunctions);
-    process.exit(0);
-  });
-  
+  logger.info('Shutting down...');
+  factoryListener.stopWatching(unwatchFunctions);
+  process.exit(0);
+});
+
+process.on('SIGTERM', async () => {
+  logger.info('Shutting down...');
+  factoryListener.stopWatching(unwatchFunctions);
+  process.exit(0);
+});
