@@ -15,7 +15,7 @@
     "start:ws": "npm run start -- --app=websocket",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
-    "prisma:studio": "prisma studio --browser none"
+    "prisma:studio": "npx prisma studio --schema=./src/prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",
