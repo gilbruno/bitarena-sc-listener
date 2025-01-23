@@ -7,6 +7,26 @@ export const factoryAbi =
         "name": "_bitarenaGames",
         "type": "address",
         "internalType": "address"
+      },
+      {
+        "name": "_challengeAdmin",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_challengeDisputeAdmin",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_challengeEmergencyAdmin",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_challengeData",
+        "type": "address",
+        "internalType": "address"
       }
     ],
     "stateMutability": "nonpayable"
@@ -64,13 +84,6 @@ export const factoryAbi =
         "internalType": "contract BitarenaChallenge"
       }
     ],
-    "stateMutability": "nonpayable"
-  },
-  {
-    "type": "function",
-    "name": "deployAndCreateChallenge",
-    "inputs": [],
-    "outputs": [],
     "stateMutability": "nonpayable"
   },
   {
@@ -138,6 +151,92 @@ export const factoryAbi =
       }
     ],
     "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getChallengeBytecode",
+    "inputs": [
+      {
+        "name": "_params",
+        "type": "tuple",
+        "internalType": "struct ChallengeParams",
+        "components": [
+          {
+            "name": "factory",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "challengesData",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "challengeAdmin",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "challengeDisputeAdmin",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "challengeEmergencyAdmin",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "challengeCreator",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "game",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "platform",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "nbTeams",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "nbTeamPlayers",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "amountPerPlayer",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "startAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "isPrivate",
+            "type": "bool",
+            "internalType": "bool"
+          }
+        ]
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bytes",
+        "internalType": "bytes"
+      }
+    ],
+    "stateMutability": "pure"
   },
   {
     "type": "function",
@@ -314,6 +413,55 @@ export const factoryAbi =
       }
     ],
     "outputs": [],
+    "stateMutability": "payable"
+  },
+  {
+    "type": "function",
+    "name": "intentChallengeDeployment",
+    "inputs": [
+      {
+        "name": "_game",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "_platform",
+        "type": "string",
+        "internalType": "string"
+      },
+      {
+        "name": "_nbTeams",
+        "type": "uint16",
+        "internalType": "uint16"
+      },
+      {
+        "name": "_nbTeamPlayers",
+        "type": "uint16",
+        "internalType": "uint16"
+      },
+      {
+        "name": "_amountPerPlayer",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_startAt",
+        "type": "uint256",
+        "internalType": "uint256"
+      },
+      {
+        "name": "_isPrivate",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address",
+        "internalType": "contract BitarenaChallenge"
+      }
+    ],
     "stateMutability": "payable"
   },
   {
@@ -608,6 +756,11 @@ export const factoryAbi =
   },
   {
     "type": "error",
+    "name": "ChallengeEmergencyAdminAddressZeroError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "ChallengeGameError",
     "inputs": []
   },
@@ -619,6 +772,11 @@ export const factoryAbi =
   {
     "type": "error",
     "name": "ChallengeStartDateError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ChallengesDataAddressZeroError",
     "inputs": []
   },
   {
@@ -667,38 +825,5 @@ export const factoryAbi =
     "type": "error",
     "name": "SendMoneyToChallengeError",
     "inputs": []
-  }
-]
-
-
-export const CREATE_CHALLENGE_ABI = [
-  {
-    "type": "function",
-    "name": "createChallenge",
-    "inputs": [
-      {
-        "name": "_challengeAdmin",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_challengeDisputeAdmin",
-        "type": "address",
-        "internalType": "address"
-      },
-      {
-        "name": "_challengeCounter",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "address",
-        "internalType": "contract BitarenaChallenge"
-      }
-    ],
-    "stateMutability": "nonpayable"
   }
 ]

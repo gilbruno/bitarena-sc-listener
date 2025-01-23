@@ -5,7 +5,7 @@ import dotenv from 'dotenv';
 import { ContractConfig } from './type';
 import USDC_SEPOLIA_ABI from './abi/transferEvtAbi.json';
 import { ContractListener } from './listener/ContractListener';
-import { BITARENA_CHALLENGES_DATA_CONTRACT_ADDRESS, BITARENA_FACTORY_CONTRACT_ADDRESS, MAINNET_USDC_ADDRESS } from './constants/contractAddresses';
+import { BITARENA_CHALLENGES_DATA_CONTRACT_ADDRESS, BITARENA_FACTORY_CONTRACT_ADDRESS } from './constants/contractAddresses';
 import { BITARENA_FACTORY_ABI } from './abi/FactoryABI';
 import { ChallengeManager } from './listener/ChallengeManager';
 import { challengeAbi } from './abi/BitarenaChallenge';
@@ -34,7 +34,7 @@ const unwatchFunctions = cListener.watchEvents();
 const listenerConfig: ContractConfig = {
   address: BITARENA_CHALLENGES_DATA_CONTRACT_ADDRESS,
   abi: challengeDataAbi as Abi,
-  chain: polygonAmoy,
+  chain: sepolia,
   events: ['ChallengeContractRegistered','ChallengeAddedToHistory', 'ChallengeEnded'],
   rpcUrl: process.env.WS_URL_TESTNET || ''
 };
