@@ -271,6 +271,32 @@ export const gamesAbi =
     },
     {
       "type": "event",
+      "name": "GameAdded",
+      "inputs": [
+        {
+          "name": "game",
+          "type": "string",
+          "indexed": false,
+          "internalType": "string"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
+      "name": "PlatformAdded",
+      "inputs": [
+        {
+          "name": "platform",
+          "type": "string",
+          "indexed": false,
+          "internalType": "string"
+        }
+      ],
+      "anonymous": false
+    },
+    {
+      "type": "event",
       "name": "RoleAdminChanged",
       "inputs": [
         {

@@ -5,9 +5,14 @@ import { logEventsChallengesData } from './listener/ChallengesData/ChalengesData
 import { challengesDataConfig } from './listener/ChallengesData/ChallengesDataConfig';
 import { gamesConfig } from './listener/Games/GamesConfig';
 import { logEventsGames } from './listener/Games/GamesListener';
+import { Abi, decodeEventLog } from 'viem';
+import { DecodeEventLogReturnType } from 'viem';
+import { ContractConfig } from './type';
+import { sepolia } from 'viem/chains';
+import { BITARENA_GAMES_CONTRACT_ADDRESS } from './constants/contractAddresses';
+import { gamesAbi } from './abi/BitarenaGames';
 
 dotenv.config();
-
 
 /** LISTENER FOR BITARENA GAMES */
 const gamesListener = new ContractListener(gamesConfig);

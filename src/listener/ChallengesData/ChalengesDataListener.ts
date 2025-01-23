@@ -1,6 +1,8 @@
 import {loggerWithTimestamp, loggerWithoutTimestamp} from "../../logger/log";
+import prisma from "../../prisma/client";
 
 export const handleChallengeContractRegistered = async (challengeContract: string, challengeParams: any): Promise<void> => {
+  /*
   try {
     await prisma.challenge.create({
       data: {
@@ -21,6 +23,7 @@ export const handleChallengeContractRegistered = async (challengeContract: strin
   } catch (error) {
     loggerWithoutTimestamp.error(`Erreur lors de l'enregistrement du challenge: ${error}`);
   }
+    */
 };
 
 /**

@@ -13,9 +13,10 @@
     "start": "npm run build && node dist/index.js",
     "startv": "npm run build && node dist/test_viem.js",
     "start:ws": "npm run start -- --app=websocket",
-    "prisma:generate": "prisma generate",
+    "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
     "prisma:push": "prisma db push",
-    "prisma:studio": "npx prisma studio --schema=./src/prisma/schema.prisma"
+    "prisma:studio": "npx prisma studio --schema=./src/prisma/schema.prisma",
+    "prisma:pull": "npx prisma db pull --schema=./src/prisma/schema.prisma"
   },
   "keywords": [],
   "author": "",

@@ -82,6 +82,8 @@ model Challenge {
   startAt          DateTime
   isPrivate        Boolean
   state            ChallengeState
+  txHash           String          @unique(map: "challenge_tx_hash_unique")
+  blockNumber      BigInt
   creator          User            @relation(fields: [challengeCreator], references: [id], onDelete: Cascade)
   Game             Game            @relation(fields: [gameId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_game_fk")
   Platform         Platform        @relation(fields: [platformId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_platform_fk")
@@ -110,15 +112,19 @@ model Message {
 }
 
 model Game {
-  id        Int         @id @default(autoincrement())
-  name      String
-  Challenge Challenge[]
+  id          Int         @id @default(autoincrement())
+  name        String
+  txHash      String      @unique(map: "game_tx_hash_unique")
+  blockNumber BigInt?
+  Challenge   Challenge[]
 }
 
 model Platform {
-  id        Int         @id @default(autoincrement())
-  name      String
-  Challenge Challenge[]
+  id          Int         @id @default(autoincrement())
+  name        String
+  txHash      String      @unique(map: "platform_tx_hash_unique")
+  blockNumber BigInt
+  Challenge   Challenge[]
 }
 
 enum ChallengeState {

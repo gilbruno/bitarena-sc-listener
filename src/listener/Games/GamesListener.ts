@@ -1,17 +1,20 @@
 import { decodeEventLog, DecodeEventLogReturnType } from "viem";
 import {loggerWithTimestamp, loggerWithoutTimestamp} from "../../logger/log";
 import { gamesConfig } from "./GamesConfig";
-
+import { DecodedEventLogGameData } from "../../types/types";
+import prisma from "../../prisma/client";
 
 /**
  * Enregistre un nouveau jeu dans la base de données
  * @param game - Le nom du jeu
  */
-export const handleGameAdded = async (game: string): Promise<void> => {
+export const handleGameAdded = async (game: string, blockNumber: bigint, txHash: string): Promise<void> => {
     try {
         await prisma.game.create({
           data: {
-            name: game
+            name: game,
+            blockNumber,
+            txHash
           }
         });
         loggerWithTimestamp.info(`Nouveau jeu enregistré - Nom: ${game}`);
@@ -24,18 +27,21 @@ export const handleGameAdded = async (game: string): Promise<void> => {
  * Enregistre une nouvelle plateforme dans la base de données
  * @param game - Le nom de la plateforme
  */
-export const handlePlatformAdded = async (game: string): Promise<void> => {
+export const handlePlatformAdded = async (platform: string, blockNumber: bigint, txHash: string): Promise<void> => {
     try {
         await prisma.game.create({
           data: {
-            name: game
+            name: platform,
+            blockNumber,
+            txHash
           }
         });
-        loggerWithTimestamp.info(`Nouvelle plateforme enregistrée - Nom: ${game}`);
+        loggerWithTimestamp.info(`Nouvelle plateforme enregistrée - Nom: ${platform}`);
       } catch (error) {
         loggerWithTimestamp.error(`Erreur lors de l'enregistrement de la plateforme: ${error}`);
       }
 };
+
 
 /**
  * Décode les événements de Bitarena Games
@@ -43,8 +49,11 @@ export const handlePlatformAdded = async (game: string): Promise<void> => {
  */
 export const logEventsGames = async (logs: any): Promise<void> => {
   const event = logs[0];
+  const blockNumber = event.blockNumber;
+  const txHash = event.transactionHash;
+  
+  let decodedData: DecodedEventLogGameData;
 
-  let decodedData
   switch (event.eventName) {  
     case 'GameAdded':
       // Décodage des données de l'événement
@@ -53,14 +62,14 @@ export const logEventsGames = async (logs: any): Promise<void> => {
         data: event.data,
         topics: event.topics,
         eventName: 'GameAdded'
-      }) as DecodeEventLogReturnType <typeof gamesConfig.abi, 'GameAdded'>;
+      }) as DecodedEventLogGameData;
       
-      const game = decodedData?.args?.[0];
+      const game = decodedData.args.game;
       if (!game) {
         loggerWithTimestamp.error('Game name not found in event data');
         return;
       }
-      await handleGameAdded(game as string);
+      await handleGameAdded(game as string, blockNumber, txHash);
       break;
 
     case 'PlatformAdded':
@@ -70,14 +79,13 @@ export const logEventsGames = async (logs: any): Promise<void> => {
         data: event.data,
         topics: event.topics,
         eventName: 'PlatformAdded'
-      }) as DecodeEventLogReturnType <typeof gamesConfig.abi, 'PlatformAdded'>;
-      
-      const platform = decodedData?.args?.[0];
+      }) as DecodedEventLogGameData;
+      const platform = decodedData.args.platform;
       if (!platform) {
         loggerWithTimestamp.error('Platform name not found in event data');
         return;
       }
-      await handlePlatformAdded(platform as string);
+      await handlePlatformAdded(platform as string, blockNumber, txHash);
       break;
   }
   console.log(logs);
