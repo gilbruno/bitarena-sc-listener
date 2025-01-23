@@ -1,7 +1,7 @@
 import { ContractListener } from "./ContractListener";
 import { ContractConfig } from "../type";
 import { Address, Abi, Chain } from "viem";
-import logger from "../logger/log";
+import {loggerWithTimestamp, loggerWithoutTimestamp} from "../logger/log";
 
 export class ChallengeManager {
     private activeListeners: Map<Address, ContractListener>;
@@ -17,7 +17,7 @@ export class ChallengeManager {
         this.chain = chain;
         this.rpcUrl = rpcUrl;
 
-        logger.info('Initialisation du ChildContractManager');
+        loggerWithoutTimestamp.info('Initialisation du ChildContractManager');
     }
 
     /*
@@ -27,11 +27,11 @@ export class ChallengeManager {
         if (logs[0].eventName === 'PlayerJoinsTeam') {
             const teamIndex = logs[0].args.teamIndex;
             const player = logs[0].args.player;
-            logger.info(`Nouveau joueur ${player} a rejoint l'équipe ${teamIndex}`);
+            loggerWithoutTimestamp.info(`Nouveau joueur ${player} a rejoint l'équipe ${teamIndex}`);
         } else if (logs[0].eventName === 'PoolChallengeWithdrawed') {
             const contractAddress = logs[0].address;
             this.stopListener(contractAddress);
-            logger.info(`Challenge ${contractAddress} terminé - Arrêt de l'écoute`);
+            loggerWithoutTimestamp.info(`Challenge ${contractAddress} terminé - Arrêt de l'écoute`);
         }
     }
 
@@ -41,7 +41,7 @@ export class ChallengeManager {
     */
     public createListener(childAddress: Address): void {
         if (this.activeListeners.has(childAddress)) {
-            logger.info(`Listener déjà existant pour le contrat ${childAddress}`);
+            loggerWithoutTimestamp.info(`Listener déjà existant pour le contrat ${childAddress}`);
             return;
         }
 
@@ -58,7 +58,7 @@ export class ChallengeManager {
         this.activeUnwatchFunctions.set(childAddress, unwatchFunctions);
 
         this.activeListeners.set(childAddress, listener);
-        logger.info(`Nouveau listener créé pour le contrat ${childAddress}`);
+        loggerWithoutTimestamp.info(`Nouveau listener créé pour le contrat ${childAddress}`);
     }
 
     public stopListener(childAddress: Address): void {
@@ -68,7 +68,7 @@ export class ChallengeManager {
             listener.stopWatching(unwatchFunctions);
             this.activeListeners.delete(childAddress);
             this.activeUnwatchFunctions.delete(childAddress);
-            logger.info(`Listener arrêté pour le contrat ${childAddress}`);
+            loggerWithoutTimestamp.info(`Listener arrêté pour le contrat ${childAddress}`);
         }
     }
 
@@ -76,6 +76,6 @@ export class ChallengeManager {
         this.activeListeners.forEach((listener, address) => {
             this.stopListener(address);
         });
-        logger.info('Tous les listeners ont été arrêtés');
+        loggerWithoutTimestamp.info('Tous les listeners ont été arrêtés');
     }
 }

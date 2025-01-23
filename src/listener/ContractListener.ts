@@ -5,7 +5,7 @@ import { Address, Chain, createPublicClient, webSocket } from "viem";
 import { Abi, PublicClient } from "viem";
 import { ContractConfig } from "../type";
 import { mainnet } from "viem/chains";
-import logger from "../logger/log";
+import {loggerWithTimestamp, loggerWithoutTimestamp} from "../logger/log";
 
 export class ContractListener {
     private publicClient: PublicClient;
@@ -26,15 +26,18 @@ export class ContractListener {
         this.chain = config.chain;
         this.rpcUrl = config.rpcUrl;
 
-        logger.info(`Initialisation du ContractListener pour le contrat: ${this.contractAddress}`);
-        logger.info(`Events surveillés: ${this.events.join(', ')}`);
+        loggerWithoutTimestamp.info(`-----------------------------------`);
+        loggerWithTimestamp.info(`Initialisation du ContractListener pour le contrat: ${this.contractAddress}`);
+        loggerWithoutTimestamp.info(`------Events surveillés: ${this.events.join(', ')}`);
+        loggerWithoutTimestamp.info(`------RPC URL: ${this.rpcUrl}`);
+        loggerWithoutTimestamp.info(`-----------------------------------`);
 
         this.publicClient = createPublicClient({
             chain: this.chain,
             transport: webSocket(this.rpcUrl)
         });
 
-        logger.info(`ContractListener initialisé sur la chaîne: ${this.chain.name}`);
+        loggerWithTimestamp.info(`ContractListener initialisé sur la chaîne: ${this.chain.name}`);
     }
   
   
@@ -45,7 +48,7 @@ export class ContractListener {
           const unsubscribeFunctions = new Map<string, () => void>();
           
           this.events.forEach(eventName => {
-              logger.info(`Démarrage de la surveillance de l'événement '${eventName}' sur le contrat ${this.contractAddress}`);
+              loggerWithoutTimestamp.info(`Démarrage de la surveillance de l'événement '${eventName}' sur le contrat ${this.contractAddress}`);
       
               const unwatch = this.publicClient.watchContractEvent({
                   address: this.contractAddress,
@@ -65,10 +68,10 @@ export class ContractListener {
     public stopWatching(unsubscribeFunctions: Map<string, () => void>): void {
       unsubscribeFunctions.forEach((unwatch, eventName) => {
         unwatch();
-        console.log(`Stopped watching ${eventName} for contract ${this.contractAddress}`);
+        loggerWithoutTimestamp.info(`Stopped watching ${eventName} for contract ${this.contractAddress}`);
       });
 
-      logger.info(`Surveillance terminée pour tous les événements du contrat ${this.contractAddress}`);
+      loggerWithoutTimestamp.info(`Surveillance terminée pour tous les événements du contrat ${this.contractAddress}`);
     }
   }
   

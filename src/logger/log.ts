@@ -1,6 +1,7 @@
 import winston from 'winston';
 
-const logger = winston.createLogger({
+// Logger avec timestamp
+const loggerWithTimestamp = winston.createLogger({
     level: 'info',
     format: winston.format.combine(
         winston.format.timestamp(),
@@ -15,4 +16,17 @@ const logger = winston.createLogger({
     ],
 });
 
-export default logger;
+// Logger sans timestamp
+const loggerWithoutTimestamp = winston.createLogger({
+    level: 'info',
+    format: winston.format.json(),
+    transports: [
+        new winston.transports.File({ filename: 'error-simple.log', level: 'error' }),
+        new winston.transports.File({ filename: 'combined-simple.log' }),
+        new winston.transports.Console({
+            format: winston.format.simple(),
+        }),
+    ],
+});
+
+export { loggerWithTimestamp, loggerWithoutTimestamp };
