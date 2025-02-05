@@ -5,7 +5,38 @@ import { challengeDataAbi } from "../../abi/BitarenaChallengesData";
 import { DecodedEventLogChallengeData, Challenge, abiChallenge } from "../../types/types";
 
 
+//-------------------------------------------------------------------
+// Création de la participation
+//-------------------------------------------------------------------
+const createParticipation = async (challengeId: string, userId: string, walletAddress: string): Promise<void> => {
+  try {
+    const wallet = await prisma.wallet.findUnique({
+      where: { address: walletAddress }
+    });
 
+    if (!wallet) {
+      loggerWithoutTimestamp.error(`Wallet non trouvé pour l'adresse ${walletAddress}`);
+      return;
+    }
+
+    await prisma.participation.create({
+      data: {
+        userId,
+        challengeId,
+        walletId: wallet.id
+      }
+    });
+
+    loggerWithoutTimestamp.info(`Participation créée pour le créateur du challenge ${challengeId}`);
+  } catch (error) {
+    loggerWithoutTimestamp.error(`Erreur lors de la création de la participation: ${error}`);
+  }
+};
+
+
+//-------------------------------------------------------------------
+// Gestion de l'event ChallengeContractRegistered
+//-------------------------------------------------------------------
 export const handleChallengeContractRegistered = async (
   challengeContract: Address,
   challengeParams: Challenge,
@@ -37,7 +68,7 @@ export const handleChallengeContractRegistered = async (
       return;
     }
 
-    await prisma.challenge.create({
+    const createdChallenge = await prisma.challenge.create({
       data: {
         challengeAddress: challengeContract as string,
         challengeCreator: wallet.userId,
@@ -54,14 +85,19 @@ export const handleChallengeContractRegistered = async (
     });
 
     loggerWithoutTimestamp.info(`Challenge enregistré avec succès: ${challengeContract}`);
+
+     // Création de la participation pour le créateur
+     await createParticipation(createdChallenge.id, wallet.userId, challengeParams.challengeCreator);
+
   } catch (error) {
     loggerWithoutTimestamp.error(`Erreur lors de l'enregistrement du challenge: ${error}`);
   }
 };
 
-/**
- * Met à jour le statut d'un challenge à FINISHED
- */
+
+//-------------------------------------------------------------------
+// Gestion de l'event ChallengeEnded
+//-------------------------------------------------------------------
 export const handleChallengeEnded = async (challengeAddress: string): Promise<void> => {
   try {
     await prisma.challenge.update({
@@ -80,6 +116,9 @@ export const handleChallengeEnded = async (challengeAddress: string): Promise<vo
 };
 
 
+//-------------------------------------------------------------------
+// Gestion des events
+//-------------------------------------------------------------------
 export const logEventsChallengesData = async (logs: any): Promise<void> => {
   const event = logs[0]
   const blockNumber = event.blockNumber
