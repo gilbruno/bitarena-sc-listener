@@ -29,7 +29,7 @@ export const handleGameAdded = async (game: string, blockNumber: bigint, txHash:
  */
 export const handlePlatformAdded = async (platform: string, blockNumber: bigint, txHash: string): Promise<void> => {
     try {
-        await prisma.game.create({
+        await prisma.platform.create({
           data: {
             name: platform,
             blockNumber,

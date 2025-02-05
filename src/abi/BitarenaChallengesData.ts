@@ -835,7 +835,7 @@ export const challengeDataAbi = [
       {
         "name": "challengeParams",
         "type": "tuple",
-        "indexed": true,
+        "indexed": false,
         "internalType": "struct Challenge",
         "components": [
           {
