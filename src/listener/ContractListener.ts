@@ -25,18 +25,17 @@ export class ContractListener {
         this.chain = config.chain;
         this.rpcUrl = config.rpcUrl;
 
-        loggerWithoutTimestamp.info(`-----------------------------------`);
-        loggerWithTimestamp.info(`Initialisation du ContractListener pour le contrat: ${this.contractAddress}`);
-        loggerWithoutTimestamp.info(`------Events surveillés: ${this.events.join(', ')}`);
-        loggerWithoutTimestamp.info(`------RPC URL: ${this.rpcUrl}`);
-        loggerWithoutTimestamp.info(`-----------------------------------`);
+        loggerWithoutTimestamp.info(`************************************************************************`);
+        loggerWithTimestamp.info(`*********** Initialisation du ContractListener pour le contrat: ${this.contractAddress} ***********`);
+        loggerWithoutTimestamp.info(`     ------  Events surveillés: ${this.events.join(', ')}`);
+        loggerWithoutTimestamp.info(`     ------  RPC URL: ${this.rpcUrl}`);
+        loggerWithoutTimestamp.info(`     ------  Blockchain: ${this.chain.name}`);
+        loggerWithoutTimestamp.info(`************************************************************************`);
 
         this.publicClient = createPublicClient({
             chain: this.chain,
             transport: webSocket(this.rpcUrl)
         });
-
-        loggerWithTimestamp.info(`ContractListener initialisé sur la chaîne: ${this.chain.name}`);
     }
   
   
@@ -47,7 +46,7 @@ export class ContractListener {
           const unsubscribeFunctions = new Map<string, () => void>();
           
           this.events.forEach(eventName => {
-              loggerWithoutTimestamp.info(`Démarrage de la surveillance de l'événement '${eventName}' sur le contrat ${this.contractAddress}`);
+              loggerWithoutTimestamp.info(`  ----> Démarrage de la surveillance de l'événement '${eventName}' sur le contrat ${this.contractAddress}`);
       
               const unwatch = this.publicClient.watchContractEvent({
                   address: this.contractAddress,

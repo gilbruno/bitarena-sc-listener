@@ -10,13 +10,21 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "build": "npx tsc",
-    "start": "npm run build && node dist/index.js",
     "startv": "npm run build && node dist/test_viem.js",
-    "start:ws": "npm run start -- --app=websocket",
+    "start:games": "npm run build && node dist/index.js games",
+    "start:challenges": "npm run build && node dist/index.js challenges",
     "prisma:generate": "npx prisma generate --schema=./src/prisma/schema.prisma",
     "prisma:push": "prisma db push",
     "prisma:studio": "npx prisma studio --schema=./src/prisma/schema.prisma",
-    "prisma:pull": "npx prisma db pull --schema=./src/prisma/schema.prisma"
+    "prisma:pull": "npx prisma db pull --schema=./src/prisma/schema.prisma",
+    "pm2:start-games": "npm run build && pm2 start dist/index.js --name bitarena-games-listener -- games",
+    "pm2:start-challenges": "npm run build && pm2 start dist/index.js --name bitarena-challenges-listener -- challenges",
+    "pm2:stop-games": "pm2 stop bitarena-games-listener",
+    "pm2:stop-challenges": "pm2 stop bitarena-challenges-listener",
+    "pm2:restart-games": "pm2 restart bitarena-games-listener",
+    "pm2:restart-challenges": "pm2 restart bitarena-challenges-listener",
+    "pm2:delete-games": "pm2 delete bitarena-games-listener",
+    "pm2:delete-challenges": "pm2 delete bitarena-challenges-listener"
   },
   "keywords": [],
   "author": "",
@@ -24,6 +32,7 @@
   "dependencies": {
     "@prisma/client": "^6.2.1",
     "@types/ws": "^8.5.13",
+    "chalk": "^4.1.2",
     "dotenv": "^16.4.7",
     "mysql2": "^3.12.0",
     "ts-node": "^10.9.2",

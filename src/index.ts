@@ -5,36 +5,47 @@ import { logEventsChallengesData } from './listener/ChallengesData/ChalengesData
 import { challengesDataConfig } from './listener/ChallengesData/ChallengesDataConfig';
 import { gamesConfig } from './listener/Games/GamesConfig';
 import { logEventsGames } from './listener/Games/GamesListener';
-import { Abi, decodeEventLog } from 'viem';
-import { DecodeEventLogReturnType } from 'viem';
-import { sepolia } from 'viem/chains';
-import { BITARENA_GAMES_CONTRACT_ADDRESS } from './constants/contractAddresses';
-import { gamesAbi } from './abi/BitarenaGames';
 
 dotenv.config();
 
-/** LISTENER FOR BITARENA GAMES */
-const gamesListener = new ContractListener(gamesConfig);
-const unwatchFunctionsGames = gamesListener.watchEvents({ onLogs: logEventsGames });
+const listenerType = process.argv[2]; // Récupère l'argument passé en ligne de commande
 
+if (!listenerType || (listenerType !== 'games' && listenerType !== 'challenges')) {
+  loggerWithTimestamp.error('Veuillez spécifier le type de listener: games ou challenges');
+  process.exit(1);
+}
+if (listenerType === 'games') {
+  /** LISTENER FOR BITARENA GAMES */
+  const gamesListener = new ContractListener(gamesConfig);
+  const unwatchFunctionsGames = gamesListener.watchEvents({ onLogs: logEventsGames });
 
+  // Handle a clean stop
+  process.on('SIGINT', async () => {
+    loggerWithTimestamp.info('Shutting down games listener...');
+    gamesListener.stopWatching(unwatchFunctionsGames);
+    process.exit(0);
+  });
 
-/** LISTENER FOR BITARENA CHALLENGES DATA */
-const challengesDataListener = new ContractListener(challengesDataConfig);
-const unwatchFunctionsChallengesData = challengesDataListener.watchEvents({ onLogs: logEventsChallengesData  });
+  process.on('SIGTERM', async () => {
+    loggerWithTimestamp.info('Shutting down games listener...');
+    gamesListener.stopWatching(unwatchFunctionsGames);
+    process.exit(0);
+  });
+} else {
+  /** LISTENER FOR BITARENA CHALLENGES DATA */
+  const challengesDataListener = new ContractListener(challengesDataConfig);
+  const unwatchFunctionsChallengesData = challengesDataListener.watchEvents({ onLogs: logEventsChallengesData });
 
-// Handle a clean stop
-process.on('SIGINT', async () => {
-  loggerWithTimestamp.info('Shutting down...');
-  challengesDataListener.stopWatching(unwatchFunctionsChallengesData);
-  gamesListener.stopWatching(unwatchFunctionsGames);
-  process.exit(0);
-});
+  // Handle a clean stop
+  process.on('SIGINT', async () => {
+    loggerWithTimestamp.info('Shutting down challenges listener...');
+    challengesDataListener.stopWatching(unwatchFunctionsChallengesData);
+    process.exit(0);
+  });
 
-process.on('SIGTERM', async () => {
-  loggerWithTimestamp.info('Shutting down...');
-  challengesDataListener.stopWatching(unwatchFunctionsChallengesData);
-  gamesListener.stopWatching(unwatchFunctionsGames);
-  process.exit(0);
-});
-
+  process.on('SIGTERM', async () => {
+    loggerWithTimestamp.info('Shutting down challenges listener...');
+    challengesDataListener.stopWatching(unwatchFunctionsChallengesData);
+    process.exit(0);
+  });
+}
