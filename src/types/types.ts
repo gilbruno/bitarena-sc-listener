@@ -33,6 +33,13 @@ export type DecodedEventLogChallengeHistoryData = {
   eventName: 'ChallengeAddedToHistory';
 }
 
+export type DecodedEventLogChallengeEndedData = {
+  args: {
+      challengeEndedAddress: string;
+  };
+  eventName: 'ChallengeEnded';
+}
+
 
 export type Challenge = {
   challengeAddress: string;

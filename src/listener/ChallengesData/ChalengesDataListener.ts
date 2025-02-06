@@ -2,7 +2,7 @@ import { Address, ByteArray, decodeAbiParameters, decodeEventLog, hexToBytes } f
 import { loggerWithTimestamp, loggerWithoutTimestamp } from "../../logger/log";
 import prisma from "../../prisma/client";
 import { challengeDataAbi } from "../../abi/BitarenaChallengesData";
-import { DecodedEventLogChallengeData, Challenge, abiChallenge, DecodedEventLogChallengeHistoryData } from "../../types/types";
+import { DecodedEventLogChallengeData, Challenge, abiChallenge, DecodedEventLogChallengeHistoryData, DecodedEventLogChallengeEndedData } from "../../types/types";
 
 
 //-------------------------------------------------------------------
@@ -195,7 +195,16 @@ export const logEventsChallengesData = async (logs: any): Promise<void> => {
 
       case 'ChallengeEnded':
         const contractAddress = event.address // L'adresse du contrat qui a émis l'événement
-        await handleChallengeEnded(contractAddress)
+        const decodedDataChallengeEnded = decodeEventLog({
+          abi: challengeDataAbi,
+          data: event.data,
+          topics: event.topics,
+          eventName: 'ChallengeEnded'
+        }) as unknown as DecodedEventLogChallengeEndedData;
+
+        const { challengeEndedAddress } = decodedDataChallengeEnded.args;
+
+        await handleChallengeEnded(challengeEndedAddress)
         break;
 
       case 'ChallengeAddedToHistory':
