@@ -1,7 +1,7 @@
 import { ContractListener } from "./ContractListener";
-import { ContractConfig } from "../type";
 import { Address, Abi, Chain } from "viem";
 import {loggerWithTimestamp, loggerWithoutTimestamp} from "../logger/log";
+import { ContractConfig } from "../types/types";
 
 export class ChallengeManager {
     private activeListeners: Map<Address, ContractListener>;

@@ -3,8 +3,7 @@
 import { Address, Chain, createPublicClient, webSocket } from "viem";
 
 import { Abi, PublicClient } from "viem";
-import { ContractConfig } from "../type";
-import { mainnet } from "viem/chains";
+import { ContractConfig } from "../types/types";
 import {loggerWithTimestamp, loggerWithoutTimestamp} from "../logger/log";
 
 export class ContractListener {

@@ -2,7 +2,7 @@ import { BITARENA_GAMES_CONTRACT_ADDRESS } from "../../constants/contractAddress
 import dotenv from 'dotenv';
 import { sepolia } from "viem/chains";
 import { Abi } from "viem";
-import { ContractConfig } from "../../type";
+import { ContractConfig } from "../../types/types";
 
 import { gamesAbi } from "../../abi/BitarenaGames";
 

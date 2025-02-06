@@ -7,7 +7,6 @@ import { gamesConfig } from './listener/Games/GamesConfig';
 import { logEventsGames } from './listener/Games/GamesListener';
 import { Abi, decodeEventLog } from 'viem';
 import { DecodeEventLogReturnType } from 'viem';
-import { ContractConfig } from './type';
 import { sepolia } from 'viem/chains';
 import { BITARENA_GAMES_CONTRACT_ADDRESS } from './constants/contractAddresses';
 import { gamesAbi } from './abi/BitarenaGames';

@@ -79,6 +79,11 @@ export const challengeDataAbi = [
         "internalType": "address"
       },
       {
+        "name": "_challengeAddress",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
         "name": "_challenge",
         "type": "tuple",
         "internalType": "struct ChallengeParams",
@@ -734,77 +739,10 @@ export const challengeDataAbi = [
         "internalType": "address"
       },
       {
-        "name": "challenge",
-        "type": "tuple",
+        "name": "challengeAddress",
+        "type": "address",
         "indexed": false,
-        "internalType": "struct ChallengeParams",
-        "components": [
-          {
-            "name": "factory",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "challengesData",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "challengeAdmin",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "challengeDisputeAdmin",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "challengeEmergencyAdmin",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "challengeCreator",
-            "type": "address",
-            "internalType": "address"
-          },
-          {
-            "name": "game",
-            "type": "string",
-            "internalType": "string"
-          },
-          {
-            "name": "platform",
-            "type": "string",
-            "internalType": "string"
-          },
-          {
-            "name": "nbTeams",
-            "type": "uint16",
-            "internalType": "uint16"
-          },
-          {
-            "name": "nbTeamPlayers",
-            "type": "uint16",
-            "internalType": "uint16"
-          },
-          {
-            "name": "amountPerPlayer",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "startAt",
-            "type": "uint256",
-            "internalType": "uint256"
-          },
-          {
-            "name": "isPrivate",
-            "type": "bool",
-            "internalType": "bool"
-          }
-        ]
+        "internalType": "address"
       }
     ],
     "anonymous": false

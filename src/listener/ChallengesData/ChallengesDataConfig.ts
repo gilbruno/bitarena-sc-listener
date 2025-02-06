@@ -2,7 +2,7 @@ import { BITARENA_CHALLENGES_DATA_CONTRACT_ADDRESS } from "../../constants/contr
 import dotenv from 'dotenv';
 import { sepolia } from "viem/chains";
 import { Abi } from "viem";
-import { ContractConfig } from "../../type";
+import { ContractConfig } from "../../types/types";
 import { challengeDataAbi } from "../../abi/BitarenaChallengesData";
 
 dotenv.config();
