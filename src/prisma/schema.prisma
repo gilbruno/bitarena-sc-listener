@@ -72,23 +72,32 @@ model Wallet {
 }
 
 model Challenge {
-  id               String          @id @default(cuid())
-  challengeCreator String
-  challengeAddress String          @unique
-  gameId           Int
-  platformId       Int
-  nbTeams          Int
-  nbTeamPlayers    Int
-  startAt          DateTime
-  isPrivate        Boolean
-  state            ChallengeState
-  txHash           String          @unique(map: "challenge_tx_hash_unique")
-  blockNumber      BigInt
-  creator          User            @relation(fields: [challengeCreator], references: [id], onDelete: Cascade)
-  Game             Game            @relation(fields: [gameId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_game_fk")
-  Platform         Platform        @relation(fields: [platformId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_platform_fk")
-  Message          Message[]
-  participations   Participation[]
+  id                              String          @id @default(cuid())
+  challengeCreator                String
+  challengeAddress                String          @unique
+  gameId                          Int
+  platformId                      Int
+  nbTeams                         Int
+  nbTeamPlayers                   Int
+  startAt                         DateTime
+  isPrivate                       Boolean
+  state                           ChallengeState
+  txHash                          String          @unique(map: "challenge_tx_hash_unique")
+  blockNumber                     BigInt
+  entryFee                        Float
+  pool                            Float
+  winnerTeam                      Int?
+  winnersClaimedCount             Int
+  delayStartVictoryClaim          Int
+  delayEndVictoryClaim            Int
+  delayStartDisputeParticipation  Int
+  delayEndDisputeParticipation    Int
+  feePercentageDispute            Float
+  creator                         User            @relation(fields: [challengeCreator], references: [id], onDelete: Cascade)
+  game                            Game            @relation(fields: [gameId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_game_fk")
+  platform                        Platform        @relation(fields: [platformId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_platform_fk")
+  messages                        Message[]
+  participations                  Participation[]
 }
 
 model Participation {
@@ -96,6 +105,7 @@ model Participation {
   userId      String
   challengeId String
   walletId    String
+  teamId      Int
   challenge   Challenge @relation(fields: [challengeId], references: [id], onDelete: Cascade)
   user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   wallet      Wallet    @relation(fields: [walletId], references: [id], onDelete: Cascade)
