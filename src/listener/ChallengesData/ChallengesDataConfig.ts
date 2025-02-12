@@ -12,6 +12,13 @@ export const challengesDataConfig: ContractConfig = {
   address: BITARENA_CHALLENGES_DATA_CONTRACT_ADDRESS,
   abi: challengeDataAbi as Abi,
   chain: sepolia,
-  events: ['ChallengeContractRegistered', 'ChallengeAddedToPlayerHistory', 'ChallengeEnded', 'WinnersClaimedCountUpdated'],
+  events: [
+    'ChallengeContractRegistered', 
+    'ChallengeAddedToPlayerHistory', 
+    'ChallengeEnded', 
+    'WinnersClaimedCountUpdated',
+    'ChallengePoolUpdated',
+    'WinnerTeamUpdated'
+  ],
   rpcUrl: process.env.WS_URL_TESTNET || ''
 };
