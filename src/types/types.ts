@@ -53,6 +53,14 @@ export type Challenge = {
   amountPerPlayer: bigint;
   startAt: bigint;
   isPrivate: boolean;
+  pool: bigint;
+  winnerTeam: number;
+  winnersClaimedCount: number;
+  delayStartVictoryClaim: bigint;
+  delayEndVictoryClaim: bigint;
+  delayStartDisputeParticipation: bigint;
+  delayEndDisputeParticipation: bigint;
+  feePercentageDispute: bigint;
 }
 
 
@@ -72,7 +80,15 @@ export const abiChallenge = [
               { name: 'nbTeamPlayers', type: 'uint16' },
               { name: 'amountPerPlayer', type: 'uint256' },
               { name: 'startAt', type: 'uint256' },
-              { name: 'isPrivate', type: 'bool' }
+              { name: 'isPrivate', type: 'bool' },
+              { name: 'pool', type: 'uint256' },
+              { name: 'winnerTeam', type: 'uint16' },
+              { name: 'winnersClaimedCount', type: 'uint16' },
+              { name: 'delayStartVictoryClaim', type: 'uint256' },
+              { name: 'delayEndVictoryClaim', type: 'uint256' },
+              { name: 'delayStartDisputeParticipation', type: 'uint256' },
+              { name: 'delayEndDisputeParticipation', type: 'uint256' },
+              { name: 'feePercentageDispute', type: 'uint256' }
           ],
           name: 'ChallengeParams',
           type: 'tuple',
