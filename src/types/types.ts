@@ -10,32 +10,32 @@ export interface ContractConfig {
 }
 
 export type DecodedEventLogGameData = {
-    args: {
-        game?: string;
-        platform?: string;
-    },
-    eventName: 'GameAdded' | 'PlatformAdded';
+  args: {
+    game?: string;
+    platform?: string;
+  },
+  eventName: 'GameAdded' | 'PlatformAdded';
 }
 
 export type DecodedEventLogChallengeData = {
   args: {
-      challengeContract: string;
-      challengeParams: Challenge;
+    challengeContract: string;
+    challengeParams: Challenge;
   };
   eventName: 'ChallengeContractRegistered';
 }
 
 export type DecodedEventLogChallengeHistoryData = {
   args: {
-      player: string;
-      challengeAddress: string;
+    player: string;
+    challengeAddress: string;
   };
-  eventName: 'ChallengeAddedToHistory';
+  eventName: 'ChallengeAddedToPlayerHistory';
 }
 
 export type DecodedEventLogChallengeEndedData = {
   args: {
-      challengeEndedAddress: string;
+    challengeEndedAddress: string;
   };
   eventName: 'ChallengeEnded';
 }
@@ -69,30 +69,30 @@ export const abiChallenge = [
     name: 'getChallengeParams',
     outputs: [
       {
-          components: [
-              { name: 'challengeAddress', type: 'address' },
-              { name: 'challengeCreator', type: 'address' },
-              { name: 'challengeAdmin', type: 'address' },
-              { name: 'challengeDisputeAdmin', type: 'address' },
-              { name: 'game', type: 'string' },
-              { name: 'platform', type: 'string' },
-              { name: 'nbTeams', type: 'uint16' },
-              { name: 'nbTeamPlayers', type: 'uint16' },
-              { name: 'amountPerPlayer', type: 'uint256' },
-              { name: 'startAt', type: 'uint256' },
-              { name: 'isPrivate', type: 'bool' },
-              { name: 'pool', type: 'uint256' },
-              { name: 'winnerTeam', type: 'uint16' },
-              { name: 'winnersClaimedCount', type: 'uint16' },
-              { name: 'delayStartVictoryClaim', type: 'uint256' },
-              { name: 'delayEndVictoryClaim', type: 'uint256' },
-              { name: 'delayStartDisputeParticipation', type: 'uint256' },
-              { name: 'delayEndDisputeParticipation', type: 'uint256' },
-              { name: 'feePercentageDispute', type: 'uint256' }
-          ],
-          name: 'ChallengeParams',
-          type: 'tuple',
+        components: [
+          { name: 'challengeAddress', type: 'address' },
+          { name: 'challengeCreator', type: 'address' },
+          { name: 'challengeAdmin', type: 'address' },
+          { name: 'challengeDisputeAdmin', type: 'address' },
+          { name: 'game', type: 'string' },
+          { name: 'platform', type: 'string' },
+          { name: 'nbTeams', type: 'uint16' },
+          { name: 'nbTeamPlayers', type: 'uint16' },
+          { name: 'amountPerPlayer', type: 'uint256' },
+          { name: 'startAt', type: 'uint256' },
+          { name: 'isPrivate', type: 'bool' },
+          { name: 'pool', type: 'uint256' },
+          { name: 'winnerTeam', type: 'uint16' },
+          { name: 'winnersClaimedCount', type: 'uint16' },
+          { name: 'delayStartVictoryClaim', type: 'uint256' },
+          { name: 'delayEndVictoryClaim', type: 'uint256' },
+          { name: 'delayStartDisputeParticipation', type: 'uint256' },
+          { name: 'delayEndDisputeParticipation', type: 'uint256' },
+          { name: 'feePercentageDispute', type: 'uint256' }
+        ],
+        name: 'ChallengeParams',
+        type: 'tuple',
       },
-  ],
-}
+    ],
+  }
 ] as const

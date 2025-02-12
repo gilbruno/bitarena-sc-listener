@@ -730,7 +730,7 @@ export const challengeDataAbi = [
   },
   {
     "type": "event",
-    "name": "ChallengeAddedToHistory",
+    "name": "ChallengeAddedToPlayerHistory",
     "inputs": [
       {
         "name": "player",

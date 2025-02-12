@@ -45,7 +45,7 @@ export const handleChallengeContractRegistered = async (
 ): Promise<void> => {
 
   try {
-    const game = await prisma.game.findFirst({  
+    const game = await prisma.game.findFirst({
       where: { name: challengeParams.game }
     });
 
@@ -86,8 +86,8 @@ export const handleChallengeContractRegistered = async (
 
     loggerWithoutTimestamp.info(`Challenge enregistré avec succès: ${challengeContract}`);
 
-     // Création de la participation pour le créateur
-     await createParticipation(createdChallenge.id, wallet.userId, challengeParams.challengeCreator);
+    // Création de la participation pour le créateur
+    await createParticipation(createdChallenge.id, wallet.userId, challengeParams.challengeCreator);
 
   } catch (error) {
     loggerWithoutTimestamp.error(`Erreur lors de l'enregistrement du challenge: ${error}`);
@@ -95,9 +95,9 @@ export const handleChallengeContractRegistered = async (
 };
 
 //-------------------------------------------------------------------
-// Gestion de l'event ChallengeAddedToHistory
+// Gestion de l'event ChallengeAddedToPlayerHistory
 //-------------------------------------------------------------------
-export const handleChallengeAddedToHistory = async (
+export const handleChallengeAddedToPlayerHistory = async (
   playerAddress: string,
   challengeAddress: string,
 ): Promise<void> => {
@@ -121,9 +121,9 @@ export const handleChallengeAddedToHistory = async (
       loggerWithoutTimestamp.error(`Wallet non trouvé pour l'adresse ${playerAddress}`);
       return;
     }
-    
+
     // Créer la participation pour le joueur
-    await createParticipation(challenge.id, wallet.userId, playerAddress);  
+    await createParticipation(challenge.id, wallet.userId, playerAddress);
 
     loggerWithoutTimestamp.info(`Participation créée pour le joueur ${wallet.userId} dans le challenge ${challengeAddress}`);
   } catch (error) {
@@ -189,9 +189,9 @@ export const logEventsChallengesData = async (logs: any): Promise<void> => {
         const { challengeContract, challengeParams } = decodedData.args;
 
         loggerWithoutTimestamp.info(` ----- challengeContract : ${challengeContract}`)
-          //const [challengeContract, challengeParams] = decodedData.args
-          await handleChallengeContractRegistered(challengeContract as Address, challengeParams, blockNumber, txHash)
-          break;
+        //const [challengeContract, challengeParams] = decodedData.args
+        await handleChallengeContractRegistered(challengeContract as Address, challengeParams, blockNumber, txHash)
+        break;
 
       case 'ChallengeEnded':
         const contractAddress = event.address // L'adresse du contrat qui a émis l'événement
@@ -207,16 +207,16 @@ export const logEventsChallengesData = async (logs: any): Promise<void> => {
         await handleChallengeEnded(challengeEndedAddress)
         break;
 
-      case 'ChallengeAddedToHistory':
+      case 'ChallengeAddedToPlayerHistory':
         const decodedHistoryData = decodeEventLog({
           abi: challengeDataAbi,
           data: event.data,
           topics: event.topics,
-          eventName: 'ChallengeAddedToHistory'
+          eventName: 'ChallengeAddedToPlayerHistory'
         }) as unknown as DecodedEventLogChallengeHistoryData;
 
         const { player, challengeAddress } = decodedHistoryData.args;
-        await handleChallengeAddedToHistory(player, challengeAddress);
+        await handleChallengeAddedToPlayerHistory(player, challengeAddress);
         break;
     }
   } catch (error) {
