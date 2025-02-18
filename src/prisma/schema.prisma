@@ -72,32 +72,32 @@ model Wallet {
 }
 
 model Challenge {
-  id                              String          @id @default(cuid())
-  challengeCreator                String
-  challengeAddress                String          @unique
-  gameId                          Int
-  platformId                      Int
-  nbTeams                         Int
-  nbTeamPlayers                   Int
-  startAt                         DateTime
-  isPrivate                       Boolean
-  state                           ChallengeState
-  txHash                          String          @unique(map: "challenge_tx_hash_unique")
-  blockNumber                     BigInt
-  entryFee                        Float
-  pool                            Float
-  winnerTeam                      Int?
-  winnersClaimedCount             Int
-  delayStartVictoryClaim          Int
-  delayEndVictoryClaim            Int
-  delayStartDisputeParticipation  Int
-  delayEndDisputeParticipation    Int
-  feePercentageDispute            Float
-  creator                         User            @relation(fields: [challengeCreator], references: [id], onDelete: Cascade)
-  game                            Game            @relation(fields: [gameId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_game_fk")
-  platform                        Platform        @relation(fields: [platformId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_platform_fk")
-  messages                        Message[]
-  participations                  Participation[]
+  id                             String          @id @default(cuid())
+  challengeCreator               String
+  challengeAddress               String          @unique
+  gameId                         Int
+  platformId                     Int
+  nbTeams                        Int
+  nbTeamPlayers                  Int
+  startAt                        DateTime
+  isPrivate                      Boolean
+  state                          ChallengeState
+  txHash                         String          @unique(map: "challenge_tx_hash_unique")
+  blockNumber                    BigInt
+  delayEndDisputeParticipation   Int
+  delayEndVictoryClaim           Int
+  delayStartDisputeParticipation Int
+  delayStartVictoryClaim         Int
+  entryFee                       Float
+  feePercentageDispute           Float
+  pool                           Float
+  winnerTeam                     Int?
+  winnersClaimedCount            Int
+  creator                        User            @relation(fields: [challengeCreator], references: [id], onDelete: Cascade)
+  game                           Game            @relation(fields: [gameId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_game_fk")
+  platform                       Platform        @relation(fields: [platformId], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "challenge_platform_fk")
+  messages                       Message[]
+  participations                 Participation[]
 }
 
 model Participation {
@@ -137,6 +137,13 @@ model Platform {
   txHash      String      @unique(map: "platform_tx_hash_unique")
   blockNumber BigInt
   Challenge   Challenge[]
+}
+
+model Mode {
+  id          Int     @id @default(autoincrement())
+  name        String
+  txHash      String  @unique(map: "mode_tx_hash_unique")
+  blockNumber BigInt?
 }
 
 enum ChallengeState {
