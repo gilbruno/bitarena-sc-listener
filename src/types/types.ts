@@ -29,8 +29,33 @@ export type DecodedEventLogChallengeHistoryData = {
   args: {
     player: string;
     challengeAddress: string;
+    teamId: number;
   };
   eventName: 'ChallengeAddedToPlayerHistory';
+}
+
+export type DecodedEventLogChallengeWinnersClaimedCountUpdated = {
+  args: {
+    challengeContract: string;
+    winnersClaimedCount: number;
+  };
+  eventName: 'WinnersClaimedCountUpdated';
+}
+
+export type DecodedEventLogChallengePoolUpdated = {
+  args: {
+    challengeContract: string;
+    pool: bigint;
+  };
+  eventName: 'ChallengePoolUpdated';
+}
+
+export type DecodedEventLogChallengeWinnerTeamUpdated = {
+  args: {
+    challengeContract: string;
+    winnerTeam: number;
+  };
+  eventName: 'WinnerTeamUpdated';
 }
 
 export type DecodedEventLogChallengeEndedData = {
