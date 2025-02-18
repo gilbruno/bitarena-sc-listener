@@ -726,6 +726,11 @@ export const factoryAbi =
   },
   {
     "type": "error",
+    "name": "AddressZeroError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "BalanceChallengeCreatorError",
     "inputs": []
   },

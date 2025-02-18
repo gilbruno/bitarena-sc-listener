@@ -154,6 +154,11 @@ export const challengeDataAbi = [
             "internalType": "bool"
           }
         ]
+      },
+      {
+        "name": "_teamIndex",
+        "type": "uint16",
+        "internalType": "uint16"
       }
     ],
     "outputs": [],
@@ -193,26 +198,7 @@ export const challengeDataAbi = [
   },
   {
     "type": "function",
-    "name": "getChallengeId",
-    "inputs": [
-      {
-        "name": "_challenge",
-        "type": "address",
-        "internalType": "address"
-      }
-    ],
-    "outputs": [
-      {
-        "name": "",
-        "type": "uint256",
-        "internalType": "uint256"
-      }
-    ],
-    "stateMutability": "view"
-  },
-  {
-    "type": "function",
-    "name": "getChallengeParams",
+    "name": "getChallengeData",
     "inputs": [
       {
         "name": "_challengeContract",
@@ -224,7 +210,7 @@ export const challengeDataAbi = [
       {
         "name": "",
         "type": "tuple",
-        "internalType": "struct Challenge",
+        "internalType": "struct ChallengeData",
         "components": [
           {
             "name": "challengeAddress",
@@ -280,8 +266,67 @@ export const challengeDataAbi = [
             "name": "isPrivate",
             "type": "bool",
             "internalType": "bool"
+          },
+          {
+            "name": "pool",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "winnerTeam",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "winnersClaimedCount",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "delayStartVictoryClaim",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "delayEndVictoryClaim",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "delayStartDisputeParticipation",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "delayEndDisputeParticipation",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "feePercentageDispute",
+            "type": "uint256",
+            "internalType": "uint256"
           }
         ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getChallengeId",
+    "inputs": [
+      {
+        "name": "_challenge",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "stateMutability": "view"
@@ -694,6 +739,55 @@ export const challengeDataAbi = [
   },
   {
     "type": "function",
+    "name": "updateChallengePool",
+    "inputs": [
+      {
+        "name": "_challengeContract",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_amountToAdd",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateWinnerTeam",
+    "inputs": [
+      {
+        "name": "_challengeContract",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "_teamIndex",
+        "type": "uint16",
+        "internalType": "uint16"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "updateWinnersClaimedCount",
+    "inputs": [
+      {
+        "name": "_challengeContract",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "upgradeToAndCall",
     "inputs": [
       {
@@ -743,6 +837,12 @@ export const challengeDataAbi = [
         "type": "address",
         "indexed": false,
         "internalType": "address"
+      },
+      {
+        "name": "teamIndex",
+        "type": "uint16",
+        "indexed": false,
+        "internalType": "uint16"
       }
     ],
     "anonymous": false
@@ -771,10 +871,10 @@ export const challengeDataAbi = [
         "internalType": "address"
       },
       {
-        "name": "challengeParams",
+        "name": "challengeData",
         "type": "tuple",
         "indexed": false,
-        "internalType": "struct Challenge",
+        "internalType": "struct ChallengeData",
         "components": [
           {
             "name": "challengeAddress",
@@ -830,6 +930,46 @@ export const challengeDataAbi = [
             "name": "isPrivate",
             "type": "bool",
             "internalType": "bool"
+          },
+          {
+            "name": "pool",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "winnerTeam",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "winnersClaimedCount",
+            "type": "uint16",
+            "internalType": "uint16"
+          },
+          {
+            "name": "delayStartVictoryClaim",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "delayEndVictoryClaim",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "delayStartDisputeParticipation",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "delayEndDisputeParticipation",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "feePercentageDispute",
+            "type": "uint256",
+            "internalType": "uint256"
           }
         ]
       }
@@ -851,6 +991,25 @@ export const challengeDataAbi = [
   },
   {
     "type": "event",
+    "name": "ChallengePoolUpdated",
+    "inputs": [
+      {
+        "name": "challengeAddress",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "newPoolAmount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "ChallengeStarted",
     "inputs": [
       {
@@ -860,6 +1019,12 @@ export const challengeDataAbi = [
         "internalType": "address"
       }
     ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "ChallengeVictoryClaimed",
+    "inputs": [],
     "anonymous": false
   },
   {
@@ -959,6 +1124,44 @@ export const challengeDataAbi = [
         "type": "address",
         "indexed": true,
         "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "WinnerTeamUpdated",
+    "inputs": [
+      {
+        "name": "challengeAddress",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      },
+      {
+        "name": "winnerTeamIndex",
+        "type": "uint16",
+        "indexed": false,
+        "internalType": "uint16"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "WinnersClaimedCountUpdated",
+    "inputs": [
+      {
+        "name": "challengeContract",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      },
+      {
+        "name": "newWinnersCount",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
       }
     ],
     "anonymous": false

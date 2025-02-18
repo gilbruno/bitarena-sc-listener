@@ -13,12 +13,22 @@ export const challengeAbi = [
             "internalType": "address"
           },
           {
+            "name": "challengesData",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
             "name": "challengeAdmin",
             "type": "address",
             "internalType": "address"
           },
           {
             "name": "challengeDisputeAdmin",
+            "type": "address",
+            "internalType": "address"
+          },
+          {
+            "name": "challengeEmergencyAdmin",
             "type": "address",
             "internalType": "address"
           },
@@ -739,6 +749,26 @@ export const challengeAbi = [
   },
   {
     "type": "function",
+    "name": "pause",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
+    "name": "paused",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
     "name": "pendingDefaultAdmin",
     "inputs": [],
     "outputs": [
@@ -928,10 +958,30 @@ export const challengeAbi = [
   },
   {
     "type": "function",
+    "name": "unpause",
+    "inputs": [],
+    "outputs": [],
+    "stateMutability": "nonpayable"
+  },
+  {
+    "type": "function",
     "name": "withdrawChallengePool",
     "inputs": [],
     "outputs": [],
     "stateMutability": "nonpayable"
+  },
+  {
+    "type": "event",
+    "name": "Debug",
+    "inputs": [
+      {
+        "name": "signer",
+        "type": "address",
+        "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
   },
   {
     "type": "event",
@@ -985,12 +1035,38 @@ export const challengeAbi = [
   },
   {
     "type": "event",
+    "name": "DisputeAccepted",
+    "inputs": [
+      {
+        "name": "player",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "ParticipateToDispute",
     "inputs": [
       {
         "name": "player",
         "type": "address",
         "indexed": true,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "Paused",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": false,
         "internalType": "address"
       }
     ],
@@ -1143,7 +1219,39 @@ export const challengeAbi = [
   },
   {
     "type": "event",
+    "name": "Unpaused",
+    "inputs": [
+      {
+        "name": "account",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
     "name": "VictoryClaimed",
+    "inputs": [
+      {
+        "name": "teamNumber",
+        "type": "uint16",
+        "indexed": false,
+        "internalType": "uint16"
+      },
+      {
+        "name": "claimer",
+        "type": "address",
+        "indexed": false,
+        "internalType": "address"
+      }
+    ],
+    "anonymous": false
+  },
+  {
+    "type": "event",
+    "name": "VictoryUnclaimed",
     "inputs": [
       {
         "name": "teamNumber",
@@ -1240,12 +1348,37 @@ export const challengeAbi = [
   },
   {
     "type": "error",
+    "name": "DelayStartClaimVictoryGreaterThanDelayEndClaimVictoryError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "DelayStartGreaterThanDelayEnd",
     "inputs": []
   },
   {
     "type": "error",
+    "name": "DelayUnclaimVictoryNotSet",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "DisputeExistsError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "DisputeParticipationNotAuthorizedError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "EnforcedPause",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "ExpectedPause",
     "inputs": []
   },
   {
@@ -1275,12 +1408,32 @@ export const challengeAbi = [
   },
   {
     "type": "error",
+    "name": "NoDisputeParticipantsError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "NotSufficientAmountForDisputeError",
     "inputs": []
   },
   {
     "type": "error",
+    "name": "NotTeamMemberError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "NotTimeYetToParticipateToDisputeError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "ReentrancyGuardReentrantCall",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "RefundImpossibleDueToTooManyDisputeParticipantsError",
     "inputs": []
   },
   {
@@ -1361,7 +1514,17 @@ export const challengeAbi = [
   },
   {
     "type": "error",
+    "name": "TimeElapsedToUnclaimVictoryError",
+    "inputs": []
+  },
+  {
+    "type": "error",
     "name": "TimeTooSoonToClaimVictoryError",
+    "inputs": []
+  },
+  {
+    "type": "error",
+    "name": "UnclaimVictoryNotAuthorized",
     "inputs": []
   },
   {
