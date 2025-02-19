@@ -13,8 +13,9 @@ export type DecodedEventLogGameData = {
   args: {
     game?: string;
     platform?: string;
+    mode?: string;
   },
-  eventName: 'GameAdded' | 'PlatformAdded';
+  eventName: 'GameAdded' | 'PlatformAdded' | 'ModeAdded'; 
 }
 
 export type DecodedEventLogChallengeData = {

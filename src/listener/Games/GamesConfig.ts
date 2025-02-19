@@ -13,6 +13,6 @@ dotenv.config();
   address: BITARENA_GAMES_CONTRACT_ADDRESS,
   abi: gamesAbi as Abi,
   chain: sepolia,
-  events: ['GameAdded', 'PlatformAdded'],
+  events: ['GameAdded', 'PlatformAdded', 'ModeAdded'],
   rpcUrl: process.env.WS_URL_TESTNET || ''
 };

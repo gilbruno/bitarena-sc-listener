@@ -42,6 +42,24 @@ export const handlePlatformAdded = async (platform: string, blockNumber: bigint,
       }
 };
 
+/**
+ * Enregistre un nouveau mode dans la base de données
+ * @param mode - Le nom du mode
+ */
+export const handleModeAdded = async (mode: string, blockNumber: bigint, txHash: string): Promise<void> => {  
+    try {
+        await prisma.mode.create({
+          data: {
+            name: mode,
+            blockNumber,
+            txHash  
+          }
+        });
+        loggerWithTimestamp.info(`Nouveau mode enregistré - Nom: ${mode}`);
+      } catch (error) {
+        loggerWithTimestamp.error(`Erreur lors de l'enregistrement du mode: ${error}`);
+      }
+};
 
 /**
  * Décode les événements de Bitarena Games
@@ -87,6 +105,22 @@ export const logEventsGames = async (logs: any): Promise<void> => {
       }
       await handlePlatformAdded(platform as string, blockNumber, txHash);
       break;
-  }
+    
+    case 'ModeAdded':
+      // Décodage des données de l'événement
+      decodedData = decodeEventLog({
+        abi: gamesConfig.abi,
+        data: event.data,
+        topics: event.topics,
+        eventName: 'ModeAdded'
+      }) as DecodedEventLogGameData;
+      const mode = decodedData.args.mode;
+      if (!mode) {
+        loggerWithTimestamp.error('Mode name not found in event data');
+        return;
+      }
+      await handleModeAdded(mode as string, blockNumber, txHash);
+      break;
+  } 
   console.log(logs);
 }
