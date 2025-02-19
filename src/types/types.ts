@@ -20,7 +20,7 @@ export type DecodedEventLogGameData = {
 export type DecodedEventLogChallengeData = {
   args: {
     challengeContract: string;
-    challengeParams: Challenge;
+    challengeData: Challenge;
   };
   eventName: 'ChallengeContractRegistered';
 }
@@ -29,7 +29,7 @@ export type DecodedEventLogChallengeHistoryData = {
   args: {
     player: string;
     challengeAddress: string;
-    teamId: number;
+    teamIndex: number;
   };
   eventName: 'ChallengeAddedToPlayerHistory';
 }
@@ -44,8 +44,8 @@ export type DecodedEventLogChallengeWinnersClaimedCountUpdated = {
 
 export type DecodedEventLogChallengePoolUpdated = {
   args: {
-    challengeContract: string;
-    pool: bigint;
+    challengeAddress: string;
+    newPoolAmount: bigint;
   };
   eventName: 'ChallengePoolUpdated';
 }
@@ -88,36 +88,3 @@ export type Challenge = {
   feePercentageDispute: bigint;
 }
 
-
-export const abiChallenge = [
-  {
-    name: 'getChallengeParams',
-    outputs: [
-      {
-        components: [
-          { name: 'challengeAddress', type: 'address' },
-          { name: 'challengeCreator', type: 'address' },
-          { name: 'challengeAdmin', type: 'address' },
-          { name: 'challengeDisputeAdmin', type: 'address' },
-          { name: 'game', type: 'string' },
-          { name: 'platform', type: 'string' },
-          { name: 'nbTeams', type: 'uint16' },
-          { name: 'nbTeamPlayers', type: 'uint16' },
-          { name: 'amountPerPlayer', type: 'uint256' },
-          { name: 'startAt', type: 'uint256' },
-          { name: 'isPrivate', type: 'bool' },
-          { name: 'pool', type: 'uint256' },
-          { name: 'winnerTeam', type: 'uint16' },
-          { name: 'winnersClaimedCount', type: 'uint16' },
-          { name: 'delayStartVictoryClaim', type: 'uint256' },
-          { name: 'delayEndVictoryClaim', type: 'uint256' },
-          { name: 'delayStartDisputeParticipation', type: 'uint256' },
-          { name: 'delayEndDisputeParticipation', type: 'uint256' },
-          { name: 'feePercentageDispute', type: 'uint256' }
-        ],
-        name: 'ChallengeParams',
-        type: 'tuple',
-      },
-    ],
-  }
-] as const

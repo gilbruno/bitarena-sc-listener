@@ -2,7 +2,7 @@ import { Address, ByteArray, decodeAbiParameters, decodeEventLog, hexToBytes } f
 import { loggerWithTimestamp, loggerWithoutTimestamp } from "../../logger/log";
 import prisma from "../../prisma/client";
 import { challengeDataAbi } from "../../abi/BitarenaChallengesData";
-import { DecodedEventLogChallengeData, Challenge, abiChallenge, DecodedEventLogChallengeHistoryData, DecodedEventLogChallengeEndedData, DecodedEventLogChallengeWinnersClaimedCountUpdated, DecodedEventLogChallengePoolUpdated, DecodedEventLogChallengeWinnerTeamUpdated } from "../../types/types";
+import { DecodedEventLogChallengeData, Challenge, DecodedEventLogChallengeHistoryData, DecodedEventLogChallengeEndedData, DecodedEventLogChallengeWinnersClaimedCountUpdated, DecodedEventLogChallengePoolUpdated, DecodedEventLogChallengeWinnerTeamUpdated } from "../../types/types";
 
 
 //-------------------------------------------------------------------
@@ -40,18 +40,18 @@ const createParticipation = async (challengeId: string, userId: string, walletAd
 //-------------------------------------------------------------------
 export const handleChallengeContractRegistered = async (
   challengeContract: Address,
-  challengeParams: Challenge,
+  challengeData: Challenge,
   blockNumber: bigint,
   txHash: string
 ): Promise<void> => {
 
   try {
     const game = await prisma.game.findFirst({
-      where: { name: challengeParams.game }
+      where: { name: challengeData.game }
     });
 
     const platform = await prisma.platform.findFirst({
-      where: { name: challengeParams.platform }
+      where: { name: challengeData.platform }
     });
 
     if (!game || !platform) {
@@ -61,11 +61,11 @@ export const handleChallengeContractRegistered = async (
 
     // Trouver l'utilisateur par son adresse wallet
     const wallet = await prisma.wallet.findUnique({
-      where: { address: challengeParams.challengeCreator },
+      where: { address: challengeData.challengeCreator },
       include: { user: true }
     });
     if (!wallet) {
-      loggerWithoutTimestamp.error(`Wallet non trouvé pour l'adresse ${challengeParams.challengeCreator}`);
+      loggerWithoutTimestamp.error(`Wallet non trouvé pour l'adresse ${challengeData.challengeCreator}`);
       return;
     }
 
@@ -75,29 +75,29 @@ export const handleChallengeContractRegistered = async (
         challengeCreator: wallet.userId,
         gameId: game.id,
         platformId: platform.id,
-        nbTeams: Number(challengeParams.nbTeams),
-        nbTeamPlayers: Number(challengeParams.nbTeamPlayers),
-        startAt: new Date(Number(challengeParams.startAt) * 1000),
-        isPrivate: challengeParams.isPrivate,
+        nbTeams: Number(challengeData.nbTeams),
+        nbTeamPlayers: Number(challengeData.nbTeamPlayers),
+        startAt: new Date(Number(challengeData.startAt) * 1000),
+        isPrivate: challengeData.isPrivate,
         state: 'CREATED',
         blockNumber,
         txHash,
-        entryFee: Number(challengeParams.amountPerPlayer),
+        entryFee: Number(challengeData.amountPerPlayer),
         pool: 0,
         winnersClaimedCount: 0,
-        delayStartVictoryClaim: Number(challengeParams.delayStartVictoryClaim),
-        delayEndVictoryClaim: Number(challengeParams.delayEndVictoryClaim),
+        delayStartVictoryClaim: Number(challengeData.delayStartVictoryClaim),
+        delayEndVictoryClaim: Number(challengeData.delayEndVictoryClaim),
         winnerTeam: 0,
-        delayStartDisputeParticipation: Number(challengeParams.delayStartDisputeParticipation),
-        delayEndDisputeParticipation: Number(challengeParams.delayEndDisputeParticipation),
-        feePercentageDispute: Number(challengeParams.feePercentageDispute)
+        delayStartDisputeParticipation: Number(challengeData.delayStartDisputeParticipation),
+        delayEndDisputeParticipation: Number(challengeData.delayEndDisputeParticipation),
+        feePercentageDispute: Number(challengeData.feePercentageDispute)
       }
     });
 
     loggerWithoutTimestamp.info(`Challenge enregistré avec succès: ${challengeContract}`);
 
     // Création de la participation pour le créateur
-    await createParticipation(createdChallenge.id, wallet.userId, challengeParams.challengeCreator, 1);
+    await createParticipation(createdChallenge.id, wallet.userId, challengeData.challengeCreator, 1);
 
   } catch (error) {
     loggerWithoutTimestamp.error(`Erreur lors de l'enregistrement du challenge: ${error}`);
@@ -108,30 +108,30 @@ export const handleChallengeContractRegistered = async (
 // Gestion de l'event ChallengePoolUpdated
 //-------------------------------------------------------------------
 export const handleChallengePoolUpdated = async (
-  challengeContract: Address,
+  challengeAddress: string,
   pool: bigint
 ): Promise<void> => {
 
   try {
     // Trouver le challenge par son adresse
     const challenge = await prisma.challenge.findUnique({
-      where: { challengeAddress: challengeContract }
+      where: { challengeAddress: challengeAddress }
     });
     if (!challenge) {
-      loggerWithoutTimestamp.error(`--- handleChallengePoolUpdated : Challenge non trouvé pour l'adresse ${challengeContract}`);
+      loggerWithoutTimestamp.error(`--- handleChallengePoolUpdated : Challenge non trouvé pour l'adresse ${challengeAddress}`);
       return;
     }
 
     await prisma.challenge.update({
       where: {
-        challengeAddress: challengeContract
+        challengeAddress: challengeAddress
       },
       data: {
         pool: Number(pool)
       }
     });
 
-    loggerWithoutTimestamp.info(`Champ pool mis à jour avec succès pour le challenge : ${challengeContract}`);
+    loggerWithoutTimestamp.info(`Champ pool mis à jour avec succès pour le challenge : ${challengeAddress}`);
 
   } catch (error) {
     loggerWithoutTimestamp.error(`--- handleChallengePoolUpdated : Erreur lors de l'enregistrement du challenge: ${error}`);
@@ -237,7 +237,7 @@ export const handleChallengeAddedToPlayerHistory = async (
     }
 
     // Créer la participation pour le joueur
-    await createParticipation(challenge.id, wallet.userId, playerAddress, teamId);
+    //await createParticipation(challenge.id, wallet.userId, playerAddress, teamId);
 
     loggerWithoutTimestamp.info(`Participation créée pour le joueur ${wallet.userId} dans le challenge ${challengeAddress}`);
   } catch (error) {
@@ -271,115 +271,118 @@ export const handleChallengeEnded = async (challengeAddress: string): Promise<vo
 //-------------------------------------------------------------------
 export const logEventsChallengesData = async (logs: any): Promise<void> => {
   try {
-    const event = logs[0]
-    const blockNumber = event.blockNumber
-    const txHash = event.transactionHash
+    // Grouper les événements par transaction
+    const eventsByTx = logs.reduce((acc: any, event: any) => {
+      const txHash = event.transactionHash;
+      if (!acc[txHash]) acc[txHash] = [];
+      acc[txHash].push(event);
+      return acc;
+    }, {});
 
-    loggerWithoutTimestamp.info(` ----- Event captured : ${event.eventName}`)
-
-    switch (event.eventName) {
-      //----------------------------------- EVENT ChallengeContractRegistered
-      case 'ChallengeContractRegistered':
-
+    // Traiter chaque transaction séquentiellement
+    for (const txHash in eventsByTx) {
+      const txEvents = eventsByTx[txHash];
+      
+      // Traiter d'abord ChallengeContractRegistered
+      const registerEvent = txEvents.find((e: any) => e.eventName === 'ChallengeContractRegistered');
+      if (registerEvent) {
+        console.log(' ----- Event captured : ChallengeContractRegistered');
         const decodedData = decodeEventLog({
           abi: challengeDataAbi,
-          data: event.data,
-          topics: event.topics,
+          data: registerEvent.data,
+          topics: registerEvent.topics,
           eventName: 'ChallengeContractRegistered'
         }) as unknown as DecodedEventLogChallengeData;
 
-        const logData = {
-          ...decodedData,
-          args: {
-            ...decodedData.args,
-            challengeParams: {
-              ...decodedData.args.challengeParams,
-              amountPerPlayer: decodedData.args.challengeParams.amountPerPlayer.toString(),
-              startAt: decodedData.args.challengeParams.startAt.toString()
-            }
-          }
-        };
-        loggerWithoutTimestamp.info(` ----- decodedData : ${JSON.stringify(logData)}`)
+        const logData = JSON.stringify(decodedData, (_, value) =>
+          typeof value === 'bigint' ? value.toString() : value
+        );
+        loggerWithoutTimestamp.info(` ----- decodedData : ${logData}`);
 
-        let { challengeContract: challengeContractRegistered, challengeParams } = decodedData.args; 
+        let { challengeContract, challengeData } = decodedData.args;
+        await handleChallengeContractRegistered(challengeContract as Address, challengeData, registerEvent.blockNumber, txHash);
+      }
 
-        loggerWithoutTimestamp.info(` ----- challengeContractRegistered : ${challengeContractRegistered}`)
-        //const [challengeContract, challengeParams] = decodedData.args
-        await handleChallengeContractRegistered(challengeContractRegistered as Address, challengeParams, blockNumber, txHash)
-        break;
+      // Attendre que l'enregistrement soit terminé
+      await new Promise(resolve => setTimeout(resolve, 2000));
 
-      //----------------------------------- EVENT WinnersClaimedCountUpdated
-      case 'WinnersClaimedCountUpdated':
-        const decodedDataWinnersClaimedCountUpdated = decodeEventLog({
-          abi: challengeDataAbi,
-          data: event.data,
-          topics: event.topics,
-          eventName: 'WinnersClaimedCountUpdated'
-        }) as unknown as DecodedEventLogChallengeWinnersClaimedCountUpdated;
+      // Traiter les autres événements de la transaction
+      for (const event of txEvents) {
+        if (event.eventName === 'ChallengeContractRegistered') continue;
 
-        let { challengeContract: challengeContractWinnersClaimedCountUpdated, winnersClaimedCount } = decodedDataWinnersClaimedCountUpdated.args;
-        await handleWinnersClaimedCountUpdated(challengeContractWinnersClaimedCountUpdated as Address, winnersClaimedCount);
+        console.log(' ----- Event captured : ', event.eventName);
+        loggerWithoutTimestamp.info(` ----- Event captured : ${event.eventName}`);
 
-        break;
+        switch (event.eventName) {
+          case 'ChallengePoolUpdated':
+            const decodedPoolData = decodeEventLog({
+              abi: challengeDataAbi,
+              data: event.data,
+              topics: event.topics,
+              eventName: 'ChallengePoolUpdated'
+            }) as unknown as DecodedEventLogChallengePoolUpdated;
 
-      //----------------------------------- EVENT ChallengePoolUpdated
-      case 'ChallengePoolUpdated':
-        const decodedDataChallengePoolUpdated = decodeEventLog({
-          abi: challengeDataAbi,
-          data: event.data,
-          topics: event.topics,
-          eventName: 'ChallengePoolUpdated'
-        }) as unknown as DecodedEventLogChallengePoolUpdated;
+            const logPoolData = JSON.stringify(decodedPoolData, (_, value) =>
+              typeof value === 'bigint' ? value.toString() : value
+            );
+            loggerWithoutTimestamp.info(` ----- decodedPoolData : ${logPoolData}`);
+    
+    
+            let { challengeAddress: challengeAddressPoolUpdated, newPoolAmount } = decodedPoolData.args;
+            await handleChallengePoolUpdated(challengeAddressPoolUpdated, newPoolAmount);
+            break;
 
-        let { challengeContract: challengeContractPoolUpdated, pool } = decodedDataChallengePoolUpdated.args;
-        await handleChallengePoolUpdated(challengeContractPoolUpdated as Address, pool);
+          case 'WinnersClaimedCountUpdated':
+            const decodedWinnersData = decodeEventLog({
+              abi: challengeDataAbi,
+              data: event.data,
+              topics: event.topics,
+              eventName: 'WinnersClaimedCountUpdated'
+            }) as unknown as DecodedEventLogChallengeWinnersClaimedCountUpdated;
 
-        break;
+            let { challengeContract: challengeContractWinnersClaimedCountUpdated, winnersClaimedCount } = decodedWinnersData.args;
+            await handleWinnersClaimedCountUpdated(challengeContractWinnersClaimedCountUpdated as Address, winnersClaimedCount);
+            break;
 
-      //----------------------------------- EVENT WinnerTeamUpdated
-      case 'WinnerTeamUpdated':
-        const decodedDataWinnerTeamUpdated = decodeEventLog({
-          abi: challengeDataAbi,
-          data: event.data,
-          topics: event.topics,
-          eventName: 'WinnerTeamUpdated'
-        }) as unknown as DecodedEventLogChallengeWinnerTeamUpdated; 
+          case 'WinnerTeamUpdated':
+            const decodedWinnerData = decodeEventLog({
+              abi: challengeDataAbi,
+              data: event.data,
+              topics: event.topics,
+              eventName: 'WinnerTeamUpdated'
+            }) as unknown as DecodedEventLogChallengeWinnerTeamUpdated;
 
-        let { challengeContract: challengeContractWinnerTeamUpdated, winnerTeam } = decodedDataWinnerTeamUpdated.args;
-        await handleWinnerTeamUpdated(challengeContractWinnerTeamUpdated as Address, winnerTeam);
+            let { challengeContract: challengeContractWinnerTeamUpdated, winnerTeam } = decodedWinnerData.args;
+            await handleWinnerTeamUpdated(challengeContractWinnerTeamUpdated as Address, winnerTeam);
+            break;
 
-        break;
+          case 'ChallengeAddedToPlayerHistory':
+            const decodedHistoryData = decodeEventLog({
+              abi: challengeDataAbi,
+              data: event.data,
+              topics: event.topics,
+              eventName: 'ChallengeAddedToPlayerHistory'
+            }) as unknown as DecodedEventLogChallengeHistoryData;
 
-      //----------------------------------- EVENT ChallengeAddedToPlayerHistory
-      case 'ChallengeAddedToPlayerHistory':
-          const decodedHistoryData = decodeEventLog({
-            abi: challengeDataAbi,
-            data: event.data,
-            topics: event.topics,
-            eventName: 'ChallengeAddedToPlayerHistory'
-          }) as unknown as DecodedEventLogChallengeHistoryData;
-  
-          const { player, challengeAddress, teamId } = decodedHistoryData.args;
-          await handleChallengeAddedToPlayerHistory(player, challengeAddress, teamId);
-          break;
+            const { player, challengeAddress, teamIndex } = decodedHistoryData.args;
+            await handleChallengeAddedToPlayerHistory(player, challengeAddress, teamIndex);
+            break;
 
-      //----------------------------------- EVENT ChallengeEnded
-      case 'ChallengeEnded':
-        const contractAddress = event.address // L'adresse du contrat qui a émis l'événement
-        const decodedDataChallengeEnded = decodeEventLog({
-          abi: challengeDataAbi,
-          data: event.data,
-          topics: event.topics,
-          eventName: 'ChallengeEnded'
-        }) as unknown as DecodedEventLogChallengeEndedData;
+          case 'ChallengeEnded':
+            const decodedEndData = decodeEventLog({
+              abi: challengeDataAbi,
+              data: event.data,
+              topics: event.topics,
+              eventName: 'ChallengeEnded'
+            }) as unknown as DecodedEventLogChallengeEndedData;
 
-        const { challengeEndedAddress } = decodedDataChallengeEnded.args;
-
-        await handleChallengeEnded(challengeEndedAddress)
-        break;
-
+            const { challengeEndedAddress } = decodedEndData.args;
+            await handleChallengeEnded(challengeEndedAddress);
+            break;
+        }
+      }
     }
   } catch (error) {
     loggerWithoutTimestamp.error(`Erreur lors du traitement de l'événement: ${error}`);
   }
-}
+};
