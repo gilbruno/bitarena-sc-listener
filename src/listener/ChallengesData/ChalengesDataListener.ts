@@ -94,10 +94,7 @@ export const handleChallengeContractRegistered = async (
       }
     });
 
-    loggerWithoutTimestamp.info(`Challenge enregistré avec succès: ${challengeContract}`);
-
-    // Création de la participation pour le créateur
-    await createParticipation(createdChallenge.id, wallet.userId, challengeData.challengeCreator, 1);
+    loggerWithoutTimestamp.info(` =====> Challenge enregistré avec succès: ${challengeContract}`);
 
   } catch (error) {
     loggerWithoutTimestamp.error(`Erreur lors de l'enregistrement du challenge: ${error}`);
@@ -131,7 +128,7 @@ export const handleChallengePoolUpdated = async (
       }
     });
 
-    loggerWithoutTimestamp.info(`Champ pool mis à jour avec succès pour le challenge : ${challengeAddress}`);
+    loggerWithoutTimestamp.info(` =====>Champ pool mis à jour avec succès pour le challenge : ${challengeAddress}`);
 
   } catch (error) {
     loggerWithoutTimestamp.error(`--- handleChallengePoolUpdated : Erreur lors de l'enregistrement du challenge: ${error}`);
@@ -142,8 +139,8 @@ export const handleChallengePoolUpdated = async (
 // Gestion de l'event WinnersClaimedCountUpdated
 //-------------------------------------------------------------------
 export const handleWinnersClaimedCountUpdated = async (
-  challengeContract: Address,
-  winnersClaimedCount: number
+  challengeContract: string,
+  newWinnersCount: number
 ): Promise<void> => {
 
   try {
@@ -161,11 +158,11 @@ export const handleWinnersClaimedCountUpdated = async (
         challengeAddress: challengeContract
       },
       data: {
-        winnersClaimedCount: winnersClaimedCount
+        winnersClaimedCount: newWinnersCount
       }
     });
 
-    loggerWithoutTimestamp.info(`Champ winnersClaimedCount mis à jour avec succès: ${challengeContract}`);
+    loggerWithoutTimestamp.info(` =====> Champ winnersClaimedCount mis à jour avec succès: ${challengeContract}`);
 
 
   } catch (error) {
@@ -177,29 +174,29 @@ export const handleWinnersClaimedCountUpdated = async (
 // Gestion de l'event WinnerTeamUpdated
 //-------------------------------------------------------------------
 export const handleWinnerTeamUpdated = async (
-  challengeContract: Address,
-  winnerTeam: number
+  challengeAddress: string,
+  winnerTeamIndex: number
 ): Promise<void> => {
   try {
     // Trouver le challenge par son adresse
     const challenge = await prisma.challenge.findUnique({
-      where: { challengeAddress: challengeContract }
+      where: { challengeAddress: challengeAddress }
     });
     if (!challenge) {
-      loggerWithoutTimestamp.error(`--- handleWinnerTeamUpdated : Challenge non trouvé pour l'adresse ${challengeContract}`);
+      loggerWithoutTimestamp.error(`--- handleWinnerTeamUpdated : Challenge non trouvé pour l'adresse ${challengeAddress}`);
       return;
     }
 
     await prisma.challenge.update({ 
       where: {
-        challengeAddress: challengeContract
+        challengeAddress: challengeAddress
       },
       data: {
-        winnerTeam: winnerTeam
+        winnerTeam: winnerTeamIndex
       }
     });
 
-    loggerWithoutTimestamp.info(`Champ winnerTeam mis à jour avec succès: ${challengeContract}`);
+    loggerWithoutTimestamp.info(` =====> Champ winnerTeam mis à jour avec succès: ${challengeAddress}`);
 
   } catch (error) {
     loggerWithoutTimestamp.error(`--- handleWinnerTeamUpdated : Erreur lors de l'enregistrement du challenge: ${error}`);
@@ -213,7 +210,7 @@ export const handleWinnerTeamUpdated = async (
 export const handleChallengeAddedToPlayerHistory = async (
   playerAddress: string,
   challengeAddress: string,
-  teamId: number
+  teamIndex: number
 ): Promise<void> => {
   try {
     // Trouver le challenge par son adresse
@@ -237,9 +234,9 @@ export const handleChallengeAddedToPlayerHistory = async (
     }
 
     // Créer la participation pour le joueur
-    //await createParticipation(challenge.id, wallet.userId, playerAddress, teamId);
+    await createParticipation(challenge.id, wallet.userId, playerAddress, teamIndex);
 
-    loggerWithoutTimestamp.info(`Participation créée pour le joueur ${wallet.userId} dans le challenge ${challengeAddress}`);
+    loggerWithoutTimestamp.info(` =====> Participation créée pour le joueur ${wallet.userId} dans le challenge ${challengeAddress}`);
   } catch (error) {
     loggerWithoutTimestamp.error(`Erreur lors de l'ajout de la participation à l'historique: ${error}`);
   }
@@ -259,7 +256,7 @@ export const handleChallengeEnded = async (challengeAddress: string): Promise<vo
       }
     });
 
-    loggerWithoutTimestamp.info(`Challenge ${challengeAddress} marqué comme terminé`);
+    loggerWithoutTimestamp.info(` =====> Challenge ${challengeAddress} marqué comme terminé`);
   } catch (error) {
     loggerWithoutTimestamp.error(`Erreur lors de la mise à jour du statut du challenge ${challengeAddress}: ${error}`);
   }
@@ -340,8 +337,8 @@ export const logEventsChallengesData = async (logs: any): Promise<void> => {
               eventName: 'WinnersClaimedCountUpdated'
             }) as unknown as DecodedEventLogChallengeWinnersClaimedCountUpdated;
 
-            let { challengeContract: challengeContractWinnersClaimedCountUpdated, winnersClaimedCount } = decodedWinnersData.args;
-            await handleWinnersClaimedCountUpdated(challengeContractWinnersClaimedCountUpdated as Address, winnersClaimedCount);
+            let { challengeContract: challengeAddressWinnersClaimedCountUpdated, newWinnersCount } = decodedWinnersData.args;
+            await handleWinnersClaimedCountUpdated(challengeAddressWinnersClaimedCountUpdated, newWinnersCount);
             break;
 
           case 'WinnerTeamUpdated':
@@ -352,8 +349,8 @@ export const logEventsChallengesData = async (logs: any): Promise<void> => {
               eventName: 'WinnerTeamUpdated'
             }) as unknown as DecodedEventLogChallengeWinnerTeamUpdated;
 
-            let { challengeContract: challengeContractWinnerTeamUpdated, winnerTeam } = decodedWinnerData.args;
-            await handleWinnerTeamUpdated(challengeContractWinnerTeamUpdated as Address, winnerTeam);
+            let { challengeAddress: challengeAddressWinnerTeamUpdated, winnerTeamIndex } = decodedWinnerData.args;
+            await handleWinnerTeamUpdated(challengeAddressWinnerTeamUpdated, winnerTeamIndex);
             break;
 
           case 'ChallengeAddedToPlayerHistory':
@@ -376,8 +373,8 @@ export const logEventsChallengesData = async (logs: any): Promise<void> => {
               eventName: 'ChallengeEnded'
             }) as unknown as DecodedEventLogChallengeEndedData;
 
-            const { challengeEndedAddress } = decodedEndData.args;
-            await handleChallengeEnded(challengeEndedAddress);
+            const { challengeContract: challengeAddressEnded } = decodedEndData.args;
+            await handleChallengeEnded(challengeAddressEnded);
             break;
         }
       }

@@ -37,7 +37,7 @@ export type DecodedEventLogChallengeHistoryData = {
 export type DecodedEventLogChallengeWinnersClaimedCountUpdated = {
   args: {
     challengeContract: string;
-    winnersClaimedCount: number;
+    newWinnersCount: number;
   };
   eventName: 'WinnersClaimedCountUpdated';
 }
@@ -52,15 +52,15 @@ export type DecodedEventLogChallengePoolUpdated = {
 
 export type DecodedEventLogChallengeWinnerTeamUpdated = {
   args: {
-    challengeContract: string;
-    winnerTeam: number;
+    challengeAddress: string;
+    winnerTeamIndex: number;
   };
   eventName: 'WinnerTeamUpdated';
 }
 
 export type DecodedEventLogChallengeEndedData = {
   args: {
-    challengeEndedAddress: string;
+    challengeContract: string;
   };
   eventName: 'ChallengeEnded';
 }
