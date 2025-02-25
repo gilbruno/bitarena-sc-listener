@@ -6,7 +6,8 @@ export interface ContractConfig {
   abi: Abi;
   chain: Chain
   events: string[];
-  rpcUrl: string
+  rpcUrl: string;
+  httpRpcUrl: string;
 }
 
 export type DecodedEventLogGameData = {

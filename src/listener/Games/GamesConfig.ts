@@ -14,5 +14,6 @@ dotenv.config();
   abi: gamesAbi as Abi,
   chain: sepolia,
   events: ['GameAdded', 'PlatformAdded', 'ModeAdded'],
-  rpcUrl: process.env.WS_URL_TESTNET || ''
+  rpcUrl: process.env.WS_URL_TESTNET || '',
+  httpRpcUrl: process.env.HTTP_URL_TESTNET || '' 
 };

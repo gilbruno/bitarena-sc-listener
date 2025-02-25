@@ -20,5 +20,6 @@ export const challengesDataConfig: ContractConfig = {
     'ChallengePoolUpdated',
     'WinnerTeamUpdated'
   ],
-  rpcUrl: process.env.WS_URL_TESTNET || ''
+  rpcUrl: process.env.WS_URL_TESTNET || '',
+  httpRpcUrl: process.env.HTTP_URL_TESTNET || ''
 };
