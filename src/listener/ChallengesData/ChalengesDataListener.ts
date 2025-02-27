@@ -24,7 +24,7 @@ const createParticipation = async (challengeId: string, userId: string, walletAd
         userId,
         challengeId,
         walletId: wallet.id,
-        teamId: teamId  
+        teamId: teamId
       }
     });
 
@@ -77,7 +77,7 @@ export const handleChallengeContractRegistered = async (
         platformId: platform.id,
         nbTeams: Number(challengeData.nbTeams),
         nbTeamPlayers: Number(challengeData.nbTeamPlayers),
-        startAt: new Date(Number(challengeData.startAt) * 1000),
+        startAt: new Date(Number(challengeData.startAt)),
         isPrivate: challengeData.isPrivate,
         state: 'CREATED',
         blockNumber,
@@ -187,7 +187,7 @@ export const handleWinnerTeamUpdated = async (
       return;
     }
 
-    await prisma.challenge.update({ 
+    await prisma.challenge.update({
       where: {
         challengeAddress: challengeAddress
       },
@@ -279,7 +279,7 @@ export const logEventsChallengesData = async (logs: any): Promise<void> => {
     // Traiter chaque transaction séquentiellement
     for (const txHash in eventsByTx) {
       const txEvents = eventsByTx[txHash];
-      
+
       // Traiter d'abord ChallengeContractRegistered
       const registerEvent = txEvents.find((e: any) => e.eventName === 'ChallengeContractRegistered');
       if (registerEvent) {
@@ -323,8 +323,8 @@ export const logEventsChallengesData = async (logs: any): Promise<void> => {
               typeof value === 'bigint' ? value.toString() : value
             );
             loggerWithoutTimestamp.info(` ----- decodedPoolData : ${logPoolData}`);
-    
-    
+
+
             let { challengeAddress: challengeAddressPoolUpdated, newPoolAmount } = decodedPoolData.args;
             await handleChallengePoolUpdated(challengeAddressPoolUpdated, newPoolAmount);
             break;
